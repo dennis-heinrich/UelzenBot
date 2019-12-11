@@ -11,6 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "feedparser": "^2.2.9",
+    "jsdom": "^15.2.1",
+    "moment": "^2.24.0",
     "request": "^2.88.0",
     "telegraf": "^3.34.1"
   }

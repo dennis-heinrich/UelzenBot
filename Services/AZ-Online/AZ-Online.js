@@ -37,48 +37,65 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Message_1 = require("../../Interfaces/Messages/Message");
+// Require statements
 var FeedParser = require("feedparser");
+var Moment = require("Moment");
+var Telegram = require('telegraf/telegram');
+var request = require("request");
+var JSDOM = require("jsdom").JSDOM;
 var AZ_Online = /** @class */ (function () {
     function AZ_Online() {
-        this.last_time = new Date();
+        this.last_time = Moment().toDate();
         this.name = "AZ Online";
-        this._request = require("request");
+        this._request = request;
     }
-    /**
-     * Updates
-     * @constructor
-     */
+    AZ_Online.CreateMessage = function (Message) {
+        return __awaiter(this, void 0, void 0, function () {
+            var TelegramC;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        TelegramC = new Telegram("1012885395:AAGb798lkuGY5hfPXkH0LMxZDa-DxGzNryE");
+                        if (!(Message.link !== null)) return [3 /*break*/, 2];
+                        return [4 /*yield*/, JSDOM.fromURL(Message.link).then(function (dom) {
+                                TelegramC.sendPhoto(-1001266018619, dom.window.document.querySelector("img").src, { caption: Message.getMessage(), parse_mode: "Markdown" }).then(function (r) { return console.log(r); });
+                            })];
+                    case 1:
+                        _a.sent();
+                        return [3 /*break*/, 3];
+                    case 2: throw new Error("Keine Nachricht vorhanden!");
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     AZ_Online.prototype.GetServiceUrlData = function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
                 return [2 /*return*/, new Promise(function (resolve) {
+                        var Telegraf = Telegram;
                         var that = _this;
-                        var Req = _this._request("https://www.az-online.de/uelzen/rssfeed.rdf");
-                        that._feedParser = new FeedParser();
-                        Req.on('response', function (res) {
-                            res.pipe(that._feedParser);
-                        });
-                        that._feedParser.on('readable', function () {
-                            var Post;
-                            while (Post = this.read()) {
+                        var Req = _this._request("https://www.az-online.de/uelzen/rssfeed.rdf").pipe(new FeedParser()).on('readable', function () {
+                            var stream = this, Post;
+                            while (Post = stream.read()) {
                                 var NewMessage = new Message_1.Message();
-                                NewMessage.date_time = new Date();
-                                NewMessage.title = Post.meta.title;
+                                NewMessage.date_time = Moment(Post.pubdate).toDate();
+                                NewMessage.title = Post.title;
                                 NewMessage.message = Post.description;
-                                if (that.last_time > NewMessage.date_time) {
-                                    console.log(NewMessage);
+                                NewMessage.link = Post.link;
+                                NewMessage.addContentOwner("AZ-Online");
+                                if (Moment(NewMessage.date_time).isAfter(that.last_time)) {
+                                    //console.log(NewMessage);
+                                    AZ_Online.CreateMessage(NewMessage);
                                 }
                             }
                         });
-                        that.last_time = new Date();
+                        that.last_time = Moment().toDate();
                     })];
             });
         });
     };
-    /**
-     * Updates the service due to limits of the web-service
-     */
     AZ_Online.prototype.UpdateServiceTick = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {

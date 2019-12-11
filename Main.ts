@@ -3,6 +3,7 @@ import {IService} from "./Interfaces/IService";
 
 export class Main {
     Services: IService[] = [];
+    Telegram: any;
 
     constructor() {
         console.log("Telegram Service Subscriber - Uelzen Bot");
