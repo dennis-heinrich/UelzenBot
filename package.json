@@ -1,0 +1,17 @@
+{
+  "name": "uelzen_bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Main.js",
+  "scripts": {
+    "start": "node Main.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "feedparser": "^2.2.9",
+    "request": "^2.88.0",
+    "telegraf": "^3.34.1"
+  }
+}
