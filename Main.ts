@@ -1,5 +1,8 @@
 import {AZ_Online} from "./Services/AZ-Online/AZ-Online";
 import {IService} from "./Interfaces/IService";
+import {Einsatzberichte} from "./Services/Feuerwehr-Uelzen/Einsatzberichte";
+
+const Moment = require("moment");
 
 export class Main {
     Services: IService[] = [];
@@ -8,6 +11,7 @@ export class Main {
     constructor() {
         console.log("Telegram Service Subscriber - Uelzen Bot");
         this.RegisterService(new AZ_Online());
+        this.RegisterService(new Einsatzberichte());
     }
 
     private RegisterService(Service: IService) {
@@ -15,7 +19,9 @@ export class Main {
     }
 
     public UpdateServices() {
+        console.info("Neuer Abfragezyklus: " + Moment().toLocaleString());
         for (let i = 0; i < this.Services.length; i++) {
+            console.info(" - Service: " + this.Services[i].name + " wird aktualisiert");
             this.Services[i].UpdateServiceTick();
         }
     }

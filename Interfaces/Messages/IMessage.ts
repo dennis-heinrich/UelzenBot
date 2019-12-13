@@ -1,11 +1,17 @@
 export interface IMessage {
-    id: number;
-    title: string;
-    message: string;
-    image_url: string;
-    date_time: Date;
-    link: string;
-    content_owner: string;
+    getTitle() : string;
+    getMessage() : string;
+    getImageUrl() : string;
+    getCreationTime() : Date;
+    getWebLinkUrl() : string;
+    getContentOwner() : string;
 
-    getMessage();
+    setTitle(Title: string);
+    setMessage(Message: string);
+    setImageUrl(Url: string);
+    setCreationTime(Datetime: Date);
+    setWebLinkUrl(Url: string);
+    setContentOwner(Owner: string);
+
+    BuildMessage();
 }
