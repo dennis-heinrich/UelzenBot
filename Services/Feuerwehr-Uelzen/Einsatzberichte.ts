@@ -1,6 +1,7 @@
 import {IService} from "../../Interfaces/IService";
 import {Message} from "../../Interfaces/Messages/Message";
 
+const Config = require("../../Configuration");
 const FeedParser = require("feedparser");
 const Moment = require("Moment");
 const request = require("request");
@@ -26,7 +27,7 @@ export class Einsatzberichte implements IService{
     public async UpdateServiceTick() {
         return new Promise<void>(resolve => {
             let that = this;
-            let Req = this._request("https://feuerwehr-uelzen.de/einsaetze/feed/").pipe(new FeedParser()).on('readable', function () {
+            this._request(Config.Services.Einsatzberichte.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
                 let stream = this, Post;
                 while(Post = stream.read()) {
                     let NewMessage = new Message();

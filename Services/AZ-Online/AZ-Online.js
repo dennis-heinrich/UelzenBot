@@ -38,6 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var Message_1 = require("../../Interfaces/Messages/Message");
 // Require statements
+var Config = require("../../Configuration");
 var FeedParser = require("feedparser");
 var Moment = require("Moment");
 var request = require("request");
@@ -83,7 +84,7 @@ var AZ_Online = /** @class */ (function () {
             return __generator(this, function (_a) {
                 return [2 /*return*/, new Promise(function (resolve) {
                         var that = _this;
-                        var Req = _this._request("https://www.az-online.de/uelzen/rssfeed.rdf").pipe(new FeedParser()).on('readable', function () {
+                        _this._request(Config.Services.AZ_Online.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
                             var stream = this, Post;
                             while (Post = stream.read()) {
                                 var NewMessage = new Message_1.Message();

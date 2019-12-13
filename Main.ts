@@ -2,6 +2,8 @@ import {AZ_Online} from "./Services/AZ-Online/AZ-Online";
 import {IService} from "./Interfaces/IService";
 import {Einsatzberichte} from "./Services/Feuerwehr-Uelzen/Einsatzberichte";
 
+// Require constants
+const Config = require('Configuration');
 const Moment = require("moment");
 
 export class Main {
@@ -10,8 +12,16 @@ export class Main {
 
     constructor() {
         console.log("Telegram Service Subscriber - Uelzen Bot");
-        this.RegisterService(new AZ_Online());
-        this.RegisterService(new Einsatzberichte());
+
+        // Allgemeine Zeitung - Uelzen
+        if(Config.Services.AZ_Online.Enabled) {
+            this.RegisterService(new AZ_Online());
+        }
+
+        // Feuerwehr Uelzen - Einsätze
+        if(Config.Services.Einsatzberichte.Enabled) {
+            this.RegisterService(new Einsatzberichte());
+        }
     }
 
     private RegisterService(Service: IService) {
@@ -32,4 +42,4 @@ let MainService = new Main();
 
 setInterval(function () {
     MainService.UpdateServices();
-}, 2000);
+}, Config.General.UpdateInterval);

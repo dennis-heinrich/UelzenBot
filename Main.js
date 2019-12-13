@@ -2,13 +2,21 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var AZ_Online_1 = require("./Services/AZ-Online/AZ-Online");
 var Einsatzberichte_1 = require("./Services/Feuerwehr-Uelzen/Einsatzberichte");
+// Require constants
+var Config = require('Configuration');
 var Moment = require("moment");
 var Main = /** @class */ (function () {
     function Main() {
         this.Services = [];
         console.log("Telegram Service Subscriber - Uelzen Bot");
-        this.RegisterService(new AZ_Online_1.AZ_Online());
-        this.RegisterService(new Einsatzberichte_1.Einsatzberichte());
+        // Allgemeine Zeitung - Uelzen
+        if (Config.Services.AZ_Online.Enabled) {
+            this.RegisterService(new AZ_Online_1.AZ_Online());
+        }
+        // Feuerwehr Uelzen - Einsätze
+        if (Config.Services.Einsatzberichte.Enabled) {
+            this.RegisterService(new Einsatzberichte_1.Einsatzberichte());
+        }
     }
     Main.prototype.RegisterService = function (Service) {
         this.Services.push(Service);
@@ -27,4 +35,4 @@ exports.Main = Main;
 var MainService = new Main();
 setInterval(function () {
     MainService.UpdateServices();
-}, 2000);
+}, Config.General.UpdateInterval);
