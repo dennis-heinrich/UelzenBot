@@ -1,9 +1,9 @@
 import {IService} from "../../Interfaces/IService";
-import {IMessage} from "../../Interfaces/Messages/IMessage";
 import {Message} from "../../Interfaces/Messages/Message";
+import {AllMessageSplitter} from "../../Helper/All";
 
 // Require statements
-const Config = require("../../Configuration");
+const Configuration = require("../../Configuration");
 const FeedParser = require("feedparser");
 const Moment = require("Moment");
 const request = require("request");
@@ -27,22 +27,10 @@ export class AZ_Online implements IService {
         this.current_count = 0;
     }
 
-    static async CreateMessage(NMessage: IMessage): Promise<void> {
-        // Try to fetch the article image
-        if(NMessage.getWebLinkUrl() !== null) {
-            await JSDOM.fromURL(NMessage.getWebLinkUrl()).then(dom => {
-                NMessage.setImageUrl(dom.window.document.querySelector("img").src);
-                Message.CreateStaticMessage(NMessage);
-            });
-        } else {
-            throw new Error("Keine Nachricht vorhanden!");
-        }
-    }
-
-    public async UpdateServiceTick() {
+    public async UpdateServiceTick() : Promise<void> {
         return new Promise<void>(resolve => {
             let that = this;
-            this._request(Config.Services.AZ_Online.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
+            this._request(Configuration.Services.AZ_Online.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
                 let stream = this, Post;
                 while(Post = stream.read()) {
                     let NewMessage = new Message();
@@ -54,7 +42,19 @@ export class AZ_Online implements IService {
 
                     if(Moment(NewMessage.getCreationTime()).isAfter(that.last_time)) {
                         that.AddUpdatedMessage();
-                        AZ_Online.CreateMessage(NewMessage);
+
+                        JSDOM.fromURL(NewMessage.getWebLinkUrl()).then(dom => {
+                            try {
+                                let image = dom.window.document.querySelector("img");
+
+                                if(dom.window.document.querySelector("img")) {
+                                    NewMessage.setImageUrl(image.src);
+                                    AllMessageSplitter.SplitMessage(NewMessage);
+                                }
+                            } catch (e) {
+                                console.error(e);
+                            }
+                        });
                     }
                 }
             });

@@ -11,10 +11,10 @@ var Message = /** @class */ (function () {
         if (NMessage.getTitle()) {
             if (NMessage.getContentOwner()) {
                 if (NMessage.getWebLinkUrl()) {
-                    return NMessage.getContentOwner() + " | *[" + NMessage.getTitle() + "](" + NMessage.getWebLinkUrl() + ") *\n" + NMessage.getMessage();
+                    return "*" + NMessage.getContentOwner() + "*\n[" + NMessage.getTitle() + "](" + NMessage.getWebLinkUrl() + ")\n" + NMessage.getMessage();
                 }
                 else {
-                    return NMessage.getContentOwner() + " | *" + NMessage.getTitle() + "*\n" + NMessage.getMessage();
+                    return "*" + NMessage.getContentOwner() + "*\n*" + NMessage.getTitle() + "*\n" + NMessage.getMessage();
                 }
             }
             else {
@@ -60,16 +60,6 @@ var Message = /** @class */ (function () {
     };
     Message.prototype.setWebLinkUrl = function (Url) {
         this.link = Url;
-    };
-    Message.CreateStaticMessage = function (NMessage) {
-        var TelegramC = new Telegram("1012885395:AAGb798lkuGY5hfPXkH0LMxZDa-DxGzNryE");
-        if (NMessage.getImageUrl() !== null) {
-            TelegramC.sendPhoto(-1001266018619, NMessage.getImageUrl(), { caption: Message.BuildMessageMarkdown(NMessage), parse_mode: "Markdown" }).then(function (r) { return console.log(r); });
-        }
-        else {
-            TelegramC.sendMessage(-1001266018619, Message.BuildMessageMarkdown(NMessage), { parse_mode: "Markdown" }).then(function (r) { return console.log(r); });
-        }
-        console.info("Neue Nachricht erstellt: Telegram");
     };
     return Message;
 }());

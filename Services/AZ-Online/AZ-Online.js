@@ -37,8 +37,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Message_1 = require("../../Interfaces/Messages/Message");
+var All_1 = require("../../Helper/All");
 // Require statements
-var Config = require("../../Configuration");
+var Configuration = require("../../Configuration");
 var FeedParser = require("feedparser");
 var Moment = require("Moment");
 var request = require("request");
@@ -59,34 +60,15 @@ var AZ_Online = /** @class */ (function () {
     AZ_Online.prototype.ClearUpdatedMessages = function () {
         this.current_count = 0;
     };
-    AZ_Online.CreateMessage = function (NMessage) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!(NMessage.getWebLinkUrl() !== null)) return [3 /*break*/, 2];
-                        return [4 /*yield*/, JSDOM.fromURL(NMessage.getWebLinkUrl()).then(function (dom) {
-                                NMessage.setImageUrl(dom.window.document.querySelector("img").src);
-                                Message_1.Message.CreateStaticMessage(NMessage);
-                            })];
-                    case 1:
-                        _a.sent();
-                        return [3 /*break*/, 3];
-                    case 2: throw new Error("Keine Nachricht vorhanden!");
-                    case 3: return [2 /*return*/];
-                }
-            });
-        });
-    };
     AZ_Online.prototype.UpdateServiceTick = function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
                 return [2 /*return*/, new Promise(function (resolve) {
                         var that = _this;
-                        _this._request(Config.Services.AZ_Online.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
+                        _this._request(Configuration.Services.AZ_Online.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
                             var stream = this, Post;
-                            while (Post = stream.read()) {
+                            var _loop_1 = function () {
                                 var NewMessage = new Message_1.Message();
                                 NewMessage.setCreationTime(Moment(Post.pubdate).toDate());
                                 NewMessage.setTitle(Post.title);
@@ -95,8 +77,22 @@ var AZ_Online = /** @class */ (function () {
                                 NewMessage.setContentOwner("AZ-Online");
                                 if (Moment(NewMessage.getCreationTime()).isAfter(that.last_time)) {
                                     that.AddUpdatedMessage();
-                                    AZ_Online.CreateMessage(NewMessage);
+                                    JSDOM.fromURL(NewMessage.getWebLinkUrl()).then(function (dom) {
+                                        try {
+                                            var image = dom.window.document.querySelector("img");
+                                            if (dom.window.document.querySelector("img")) {
+                                                NewMessage.setImageUrl(image.src);
+                                                All_1.AllMessageSplitter.SplitMessage(NewMessage);
+                                            }
+                                        }
+                                        catch (e) {
+                                            console.error(e);
+                                        }
+                                    });
                                 }
+                            };
+                            while (Post = stream.read()) {
+                                _loop_1();
                             }
                         });
                         that.last_time = Moment().toDate();

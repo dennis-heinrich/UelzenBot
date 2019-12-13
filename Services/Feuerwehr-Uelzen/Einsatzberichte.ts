@@ -1,7 +1,8 @@
 import {IService} from "../../Interfaces/IService";
 import {Message} from "../../Interfaces/Messages/Message";
+import {AllMessageSplitter} from "../../Helper/All";
 
-const Config = require("../../Configuration");
+const Configuration = require("../../Configuration");
 const FeedParser = require("feedparser");
 const Moment = require("Moment");
 const request = require("request");
@@ -24,22 +25,23 @@ export class Einsatzberichte implements IService{
         return this.current_count;
     }
 
-    public async UpdateServiceTick() {
+    public async UpdateServiceTick() : Promise<void> {
         return new Promise<void>(resolve => {
             let that = this;
-            this._request(Config.Services.Einsatzberichte.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
+            this._request(Configuration.Services.Einsatzberichte.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
                 let stream = this, Post;
                 while(Post = stream.read()) {
                     let NewMessage = new Message();
                     NewMessage.setCreationTime(Moment(Post.pubdate).toDate());
-                    NewMessage.setTitle(Post.title);
-                    NewMessage.setMessage(Post.description);
+                    NewMessage.setTitle(Post.title.replace(' – – ',' - '));
+                    NewMessage.setMessage("");
+                    NewMessage.setImageUrl(null);
                     NewMessage.setWebLinkUrl(Post.link);
-                    NewMessage.setContentOwner("Feuerwehr Uelzen");
+                    NewMessage.setContentOwner("Feuerwehr Uelzen - Einsatz");
 
                     if(Moment(NewMessage.getCreationTime()).isAfter(that.last_time)) {
                         that.AddUpdatedMessage();
-                        Message.BuildMessageMarkdown(NewMessage);
+                        AllMessageSplitter.SplitMessage(NewMessage);
                     }
                 }
             });

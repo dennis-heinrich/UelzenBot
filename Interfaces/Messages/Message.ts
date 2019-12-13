@@ -17,9 +17,9 @@ export class Message implements IMessage {
         if(NMessage.getTitle()) {
             if(NMessage.getContentOwner()) {
                 if(NMessage.getWebLinkUrl()) {
-                    return NMessage.getContentOwner() + " | *[" + NMessage.getTitle() + "]("+NMessage.getWebLinkUrl()+") *\n" + NMessage.getMessage();
+                    return "*" + NMessage.getContentOwner() + "*\n[" + NMessage.getTitle() + "]("+NMessage.getWebLinkUrl()+")\n" + NMessage.getMessage();
                 } else {
-                    return NMessage.getContentOwner() + " | *" + NMessage.getTitle() + "*\n" + NMessage.getMessage();
+                    return "*" + NMessage.getContentOwner() + "*\n*" + NMessage.getTitle() + "*\n" + NMessage.getMessage();
                 }
             } else {
                 return "*" + NMessage.getTitle() + "*\n" + NMessage.getMessage();
@@ -75,15 +75,5 @@ export class Message implements IMessage {
 
     setWebLinkUrl(Url: string) {
         this.link = Url;
-    }
-
-    public static CreateStaticMessage(NMessage: IMessage) {
-        let TelegramC = new Telegram("1012885395:AAGb798lkuGY5hfPXkH0LMxZDa-DxGzNryE");
-        if(NMessage.getImageUrl() !== null) {
-            TelegramC.sendPhoto(-1001266018619, NMessage.getImageUrl(), { caption: Message.BuildMessageMarkdown(NMessage), parse_mode: "Markdown" }).then(r => console.log(r));
-        } else {
-            TelegramC.sendMessage(-1001266018619, Message.BuildMessageMarkdown(NMessage), { parse_mode: "Markdown" }).then(r => console.log(r));
-        }
-        console.info("Neue Nachricht erstellt: Telegram");
     }
 }

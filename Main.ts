@@ -3,7 +3,7 @@ import {IService} from "./Interfaces/IService";
 import {Einsatzberichte} from "./Services/Feuerwehr-Uelzen/Einsatzberichte";
 
 // Require constants
-const Config = require('Configuration');
+const Configuration = require("./Configuration");
 const Moment = require("moment");
 
 export class Main {
@@ -14,12 +14,12 @@ export class Main {
         console.log("Telegram Service Subscriber - Uelzen Bot");
 
         // Allgemeine Zeitung - Uelzen
-        if(Config.Services.AZ_Online.Enabled) {
+        if(Configuration.Services.AZ_Online.Enabled) {
             this.RegisterService(new AZ_Online());
         }
 
         // Feuerwehr Uelzen - Einsätze
-        if(Config.Services.Einsatzberichte.Enabled) {
+        if(Configuration.Services.Einsatzberichte.Enabled) {
             this.RegisterService(new Einsatzberichte());
         }
     }
@@ -35,6 +35,7 @@ export class Main {
             console.info(" - Service: " + this.Services[i].name + " wird aktualisiert ("+this.Services[i].GetUpdatedMessages()+")");
             this.Services[i].ClearUpdatedMessages();
         }
+        console.info(" | Abfragezyklus beendet")
     }
 }
 
@@ -42,4 +43,4 @@ let MainService = new Main();
 
 setInterval(function () {
     MainService.UpdateServices();
-}, Config.General.UpdateInterval);
+}, Configuration.General.UpdateInterval);

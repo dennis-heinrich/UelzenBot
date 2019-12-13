@@ -36,55 +36,26 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Message_1 = require("../../Interfaces/Messages/Message");
-var All_1 = require("../../Helper/All");
-var Configuration = require("../../Configuration");
-var FeedParser = require("feedparser");
-var Moment = require("Moment");
-var request = require("request");
-var Einsatzberichte = /** @class */ (function () {
-    function Einsatzberichte() {
-        this.name = "Feuerwehr Uelzen";
-        this.current_count = 0;
-        this.last_time = Moment().toDate();
-        this._request = request;
+var Telegram_1 = require("./Telegram");
+var Discord_1 = require("./Discord");
+var AllMessageSplitter = /** @class */ (function () {
+    function AllMessageSplitter() {
     }
-    Einsatzberichte.prototype.AddUpdatedMessage = function () {
-        this.current_count += 1;
-    };
-    Einsatzberichte.prototype.ClearUpdatedMessages = function () {
-        this.current_count = 0;
-    };
-    Einsatzberichte.prototype.GetUpdatedMessages = function () {
-        return this.current_count;
-    };
-    Einsatzberichte.prototype.UpdateServiceTick = function () {
+    AllMessageSplitter.SplitMessage = function (NMessage) {
         return __awaiter(this, void 0, void 0, function () {
-            var _this = this;
             return __generator(this, function (_a) {
-                return [2 /*return*/, new Promise(function (resolve) {
-                        var that = _this;
-                        _this._request(Configuration.Services.Einsatzberichte.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
-                            var stream = this, Post;
-                            while (Post = stream.read()) {
-                                var NewMessage = new Message_1.Message();
-                                NewMessage.setCreationTime(Moment(Post.pubdate).toDate());
-                                NewMessage.setTitle(Post.title.replace(' – – ', ' - '));
-                                NewMessage.setMessage("");
-                                NewMessage.setImageUrl(null);
-                                NewMessage.setWebLinkUrl(Post.link);
-                                NewMessage.setContentOwner("Feuerwehr Uelzen - Einsatz");
-                                if (Moment(NewMessage.getCreationTime()).isAfter(that.last_time)) {
-                                    that.AddUpdatedMessage();
-                                    All_1.AllMessageSplitter.SplitMessage(NewMessage);
-                                }
-                            }
-                        });
-                        that.last_time = Moment().toDate();
-                    })];
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Telegram_1.TelegramHelper.CreateTelegramMessage(NMessage)];
+                    case 1:
+                        _a.sent();
+                        return [4 /*yield*/, Discord_1.DiscordHelper.CreateDiscordMessage(NMessage)];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
             });
         });
     };
-    return Einsatzberichte;
+    return AllMessageSplitter;
 }());
-exports.Einsatzberichte = Einsatzberichte;
+exports.AllMessageSplitter = AllMessageSplitter;
