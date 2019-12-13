@@ -21,8 +21,9 @@ export class Main {
     public UpdateServices() {
         console.info("Neuer Abfragezyklus: " + Moment().toLocaleString());
         for (let i = 0; i < this.Services.length; i++) {
-            console.info(" - Service: " + this.Services[i].name + " wird aktualisiert");
             this.Services[i].UpdateServiceTick();
+            console.info(" - Service: " + this.Services[i].name + " wird aktualisiert ("+this.Services[i].GetUpdatedMessages()+")");
+            this.Services[i].ClearUpdatedMessages();
         }
     }
 }

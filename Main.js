@@ -16,8 +16,9 @@ var Main = /** @class */ (function () {
     Main.prototype.UpdateServices = function () {
         console.info("Neuer Abfragezyklus: " + Moment().toLocaleString());
         for (var i = 0; i < this.Services.length; i++) {
-            console.info(" - Service: " + this.Services[i].name + " wird aktualisiert");
             this.Services[i].UpdateServiceTick();
+            console.info(" - Service: " + this.Services[i].name + " wird aktualisiert (" + this.Services[i].GetUpdatedMessages() + ")");
+            this.Services[i].ClearUpdatedMessages();
         }
     };
     return Main;
