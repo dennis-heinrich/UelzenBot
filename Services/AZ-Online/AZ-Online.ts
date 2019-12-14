@@ -63,7 +63,7 @@ export class AZ_Online implements IService {
 
                 //console.log(that.store.IsStored(NewMessage));
                 if(!that.store.IsStored(NewMessage)) {
-                    console.log(NewMessage.getTitle());
+                    console.info(" * "+ that.name + ": " + NewMessage.getTitle());
                     that.store.Store(NewMessage);
                     that.AddUpdatedMessage();
 

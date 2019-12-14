@@ -8,7 +8,6 @@ const Moment = require("moment");
 
 export class Main {
     Services: IService[] = [];
-    Telegram: any;
 
     constructor() {
         console.log("Telegram Service Subscriber - Uelzen Bot");
@@ -41,6 +40,8 @@ export class Main {
 
 let MainService = new Main();
 
+// Start Service Updater
+MainService.UpdateServices();
 setInterval(function () {
     MainService.UpdateServices();
 }, Configuration.General.UpdateInterval);

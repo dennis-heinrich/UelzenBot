@@ -63,7 +63,7 @@ export class Einsatzberichte implements IService{
 
                     if(!that.store.IsStored(NewMessage)) {
                         that.store.Store(NewMessage);
-                        console.log(NewMessage.getTitle());
+                        console.info(" * "+ that.name + ": " + NewMessage.getTitle() + " - " + NewMessage.getCreationTime().toLocaleString());
                         that.AddUpdatedMessage();
                         AllMessageSplitter.SplitMessage(NewMessage);
                     }

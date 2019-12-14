@@ -1,8 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var Telegram = require('telegraf/telegram');
+var Moment = require("moment");
+require("moment/locale/de");
 var Message = /** @class */ (function () {
     function Message() {
+        Moment().locale("de");
     }
     Message.prototype.BuildMessage = function () {
         return Message.BuildMessageMarkdown(this);
@@ -11,7 +13,12 @@ var Message = /** @class */ (function () {
         if (NMessage.getTitle()) {
             if (NMessage.getContentOwner()) {
                 if (NMessage.getWebLinkUrl()) {
-                    return "*" + NMessage.getContentOwner() + "*\n[" + NMessage.getTitle() + "](" + NMessage.getWebLinkUrl() + ")\n" + NMessage.getMessage();
+                    if (NMessage.getMessage() == "") {
+                        return "*" + NMessage.getContentOwner() + "*\n[" + NMessage.getTitle() + "](" + NMessage.getWebLinkUrl() + ")\nVon: _" + Moment(NMessage.getCreationTime()).format('lll') + "_";
+                    }
+                    else {
+                        return "*" + NMessage.getContentOwner() + "*\n[" + NMessage.getTitle() + "](" + NMessage.getWebLinkUrl() + ")\n" + NMessage.getMessage() + "\nVon: _" + Moment(NMessage.getCreationTime()).format('lll') + "_";
+                    }
                 }
                 else {
                     return "*" + NMessage.getContentOwner() + "*\n*" + NMessage.getTitle() + "*\n" + NMessage.getMessage();

@@ -1,5 +1,6 @@
 import {IMessage} from "./IMessage";
-const Telegram = require('telegraf/telegram');
+const Moment = require("moment");
+import 'moment/locale/de';
 
 export class Message implements IMessage {
     private content_owner: string;
@@ -9,6 +10,10 @@ export class Message implements IMessage {
     private message: string;
     private title: string;
 
+    constructor() {
+        Moment().locale("de");
+    }
+
     BuildMessage() {
         return Message.BuildMessageMarkdown(this);
     }
@@ -17,7 +22,11 @@ export class Message implements IMessage {
         if(NMessage.getTitle()) {
             if(NMessage.getContentOwner()) {
                 if(NMessage.getWebLinkUrl()) {
-                    return "*" + NMessage.getContentOwner() + "*\n[" + NMessage.getTitle() + "]("+NMessage.getWebLinkUrl()+")\n" + NMessage.getMessage();
+                    if(NMessage.getMessage() == "") {
+                        return "*" + NMessage.getContentOwner() + "*\n[" + NMessage.getTitle() + "]("+NMessage.getWebLinkUrl()+")\nVon: _"+Moment(NMessage.getCreationTime()).format('lll')+"_";
+                    } else {
+                        return "*" + NMessage.getContentOwner() + "*\n[" + NMessage.getTitle() + "]("+NMessage.getWebLinkUrl()+")\n" + NMessage.getMessage() + "\nVon: _"+Moment(NMessage.getCreationTime()).format('lll')+"_";
+                    }
                 } else {
                     return "*" + NMessage.getContentOwner() + "*\n*" + NMessage.getTitle() + "*\n" + NMessage.getMessage();
                 }

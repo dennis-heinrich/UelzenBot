@@ -34,6 +34,8 @@ var Main = /** @class */ (function () {
 }());
 exports.Main = Main;
 var MainService = new Main();
+// Start Service Updater
+MainService.UpdateServices();
 setInterval(function () {
     MainService.UpdateServices();
 }, Configuration.General.UpdateInterval);

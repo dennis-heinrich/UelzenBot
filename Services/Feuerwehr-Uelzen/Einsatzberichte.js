@@ -95,7 +95,7 @@ var Einsatzberichte = /** @class */ (function () {
                                 NewMessage.setContentOwner("Feuerwehr Uelzen - Einsatz");
                                 if (!that.store.IsStored(NewMessage)) {
                                     that.store.Store(NewMessage);
-                                    console.log(NewMessage.getTitle());
+                                    console.info(" * " + that.name + ": " + NewMessage.getTitle() + " - " + NewMessage.getCreationTime().toLocaleString());
                                     that.AddUpdatedMessage();
                                     All_1.AllMessageSplitter.SplitMessage(NewMessage);
                                 }
