@@ -54,7 +54,6 @@ export class ServiceDataStore implements IServiceDataStore{
         let Path = __dirname  + "/../../Data/"+this.GetName()+".json";
         FS.writeFile(Path, JSON.stringify(this.MessageStore), function (err) {
             if(err) throw err;
-            console.log("Save!");
         });
     }
 
@@ -63,10 +62,7 @@ export class ServiceDataStore implements IServiceDataStore{
         let Path = __dirname + "/../../Data/"+this.GetName()+".json";
         if(FS.existsSync(Path)) {
             FS.readFile(Path,'utf8', function (err, Data) {
-                if(err) {
-                    console.log(" ! * ! Fehler beim lesen des Data-Stores ! * !");
-                    return console.log(err);
-                }
+                if(err) throw err;
 
                 let Object = JSON.parse(Data);
                 for(let i = 0; i < Object.length; i++) {
