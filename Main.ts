@@ -1,6 +1,7 @@
 import {AZ_Online} from "./Services/AZ-Online/AZ-Online";
 import {IService} from "./Interfaces/IService";
 import {Einsatzberichte} from "./Services/Feuerwehr-Uelzen/Einsatzberichte";
+import {UelzenTV} from "./Services/Uelzen-TV/UelzenTV";
 
 // Require constants
 const Configuration = require("./Configuration");
@@ -18,16 +19,26 @@ export class Main {
         }
 
         // Feuerwehr Uelzen - Einsätze
-        if(Configuration.Services.Einsatzberichte.Enabled) {
+        if(Configuration.Services.FF_UE_Einsatzberichte.Enabled) {
             this.RegisterService(new Einsatzberichte());
         }
+
+        if(Configuration.Services.UelzenTV.Enabled) {
+            this.RegisterService(new UelzenTV());
+        }
+
+        this.Inital_Load();
+    }
+
+    private Inital_Load() {
+        this.LoadServiceDataStorage();
     }
 
     private RegisterService(Service: IService) {
         this.Services.push(Service);
     }
 
-    public UpdateServices() {
+    public async UpdateServices() {
         console.info("Neuer Abfragezyklus: " + Moment().toLocaleString());
         for (let i = 0; i < this.Services.length; i++) {
             this.Services[i].UpdateServiceTick();
@@ -36,12 +47,31 @@ export class Main {
         }
         console.info(" | Abfragezyklus beendet")
     }
+
+    public LoadServiceDataStorage() {
+        console.info("Lade DataStorage: " + Moment().toLocaleString());
+        for (let i = 0; i < this.Services.length; i++) {
+            this.Services[i].store.LoadPersist();
+            console.info(" ! Service: " + this.Services[i].name + " wird geladen");
+        }
+    }
+
+    public SaveServiceDataStorage() {
+        console.info("Speichere DataStorage: " + Moment().toLocaleString());
+        for (let i = 0; i < this.Services.length; i++) {
+            this.Services[i].store.SavePersist();
+            console.info(" ! Service: " + this.Services[i].name + " wird gespeichert");
+        }
+    }
 }
 
 let MainService = new Main();
 
 // Start Service Updater
-MainService.UpdateServices();
-setInterval(function () {
+setTimeout(function () {
     MainService.UpdateServices();
-}, Configuration.General.UpdateInterval);
+    setInterval(function () {
+        MainService.UpdateServices();
+        MainService.SaveServiceDataStorage();
+    }, Configuration.General.UpdateInterval);
+}, 2000);

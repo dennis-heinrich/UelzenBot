@@ -1,8 +1,26 @@
 import {IMessage} from "../Interfaces/Messages/IMessage";
+import {Message} from "../Interfaces/Messages/Message";
 
-export class ServiceDataStore {
-    private Name: string = "default";
-    private MessageStore: IMessage[] = [];
+const FS = require('fs');
+const Moment = require("moment");
+
+export interface IServiceDataStore {
+    Name: string;
+    MessageStore: IMessage[];
+
+    SetName(Name: string): void;
+    GetName(): string;
+
+    Store(Message: IMessage): void;
+    IsStored(Message: IMessage): boolean;
+
+    LoadPersist(Message: IMessage): Promise<void>;
+    SavePersist(): Promise<void>;
+}
+
+export class ServiceDataStore implements IServiceDataStore{
+    Name: string = "default";
+    MessageStore: IMessage[] = [];
 
     constructor(Name: string) {
         this.SetName(Name);
@@ -30,5 +48,44 @@ export class ServiceDataStore {
         }
 
         return Stored;
+    }
+
+    public SavePersist(): Promise<void> {
+        return new Promise(resolve => {
+            let Path = __dirname  + "/../Data/Store/"+this.GetName()+".json";
+            FS.writeFile(Path, JSON.stringify(this.MessageStore), 'utf8', function (err) {
+                if(err) {
+                    console.log(" ! * ! Fehler beim schreiben des Data-Stores ! * !");
+                    return console.log(err);
+                }
+            });
+        });
+    }
+
+    public LoadPersist(): Promise<void> {
+        return new Promise(resolve => {
+            let that = this;
+            let Path = __dirname + "/../Data/Store/"+this.GetName()+".json";
+            if(FS.existsSync(Path)) {
+                FS.readFile(Path,'utf8', function (err, Data) {
+                    if(err) {
+                        console.log(" ! * ! Fehler beim lesen des Data-Stores ! * !");
+                        return console.log(err);
+                    }
+
+                    let Object = JSON.parse(Data);
+                    for(let i = 0; i < Object.length; i++) {
+                        let NMessage = new Message();
+                        NMessage.setTitle(Object[i].title);
+                        NMessage.setImageUrl(Object[i].image_url);
+                        NMessage.setMessage(Object[i].message);
+                        NMessage.setWebLinkUrl(Object[i].link);
+                        NMessage.setContentOwner(Object[i].content_owner);
+                        NMessage.setCreationTime(Moment(Object[i].date_time));
+                        that.MessageStore.push(NMessage);
+                    }
+                });
+            }
+        });
     }
 }

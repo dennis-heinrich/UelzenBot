@@ -42,53 +42,68 @@ var ServiceDataStore_1 = require("../../Helper/ServiceDataStore");
 var Configuration = require("../../Configuration");
 var FeedParser = require("feedparser");
 var Moment = require("Moment");
-var request = require("request");
-var Einsatzberichte = /** @class */ (function () {
-    function Einsatzberichte() {
-        this.name = "Feuerwehr Uelzen";
-        this.store = new ServiceDataStore_1.ServiceDataStore(this.name);
+var Request = require("request");
+var JSDOM = require("jsdom").JSDOM;
+var UelzenTV = /** @class */ (function () {
+    function UelzenTV() {
+        this.id = "uelzen_tv";
+        this.name = "Uelzen-TV";
+        this.store = new ServiceDataStore_1.ServiceDataStore(this.id);
         this.current_count = 0;
-        this.last_time = Moment().toDate();
-        this._request = request;
+        this._request = Request;
     }
-    Einsatzberichte.prototype.AddUpdatedMessage = function () {
+    UelzenTV.prototype.AddUpdatedMessage = function () {
         this.current_count += 1;
     };
-    Einsatzberichte.prototype.ClearUpdatedMessages = function () {
+    UelzenTV.prototype.ClearUpdatedMessages = function () {
         this.current_count = 0;
     };
-    Einsatzberichte.prototype.GetUpdatedMessages = function () {
+    UelzenTV.prototype.GetUpdatedMessages = function () {
         return this.current_count;
     };
-    Einsatzberichte.prototype.UpdateServiceTick = function () {
+    UelzenTV.prototype.UpdateServiceTick = function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
                 return [2 /*return*/, new Promise(function (resolve) {
                         var that = _this;
-                        _this._request(Configuration.Services.Einsatzberichte.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
+                        _this._request(Configuration.Services.UelzenTV.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
                             var stream = this, Post;
-                            while (Post = stream.read()) {
+                            var _loop_1 = function () {
                                 var NewMessage = new Message_1.Message();
                                 NewMessage.setCreationTime(Moment(Post.pubdate).toDate());
-                                NewMessage.setTitle(Post.title.replace(' – – ', ' - '));
+                                NewMessage.setTitle(Post.title);
                                 NewMessage.setMessage("");
-                                NewMessage.setImageUrl(null);
                                 NewMessage.setWebLinkUrl(Post.link);
-                                NewMessage.setContentOwner("Feuerwehr Uelzen - Einsatz");
+                                NewMessage.setContentOwner("Uelzen TV");
+                                //console.log(that.store.IsStored(NewMessage));
                                 if (!that.store.IsStored(NewMessage)) {
+                                    console.info(" * " + that.name + ": " + NewMessage.getTitle());
                                     that.store.Store(NewMessage);
-                                    console.info(" * " + that.name + ": " + NewMessage.getTitle() + " - " + NewMessage.getCreationTime().toLocaleString());
                                     that.AddUpdatedMessage();
-                                    All_1.AllMessageSplitter.SplitMessage(NewMessage);
+                                    JSDOM.fromURL(NewMessage.getWebLinkUrl()).then(function (dom) {
+                                        try {
+                                            var image = dom.window.document.querySelector("article p img");
+                                            if (image) {
+                                                NewMessage.setImageUrl(image.src);
+                                                All_1.AllMessageSplitter.SplitMessage(NewMessage);
+                                            }
+                                        }
+                                        catch (e) {
+                                            console.error(e);
+                                        }
+                                    });
                                 }
+                            };
+                            while (Post = stream.read()) {
+                                _loop_1();
                             }
                         });
-                        that.last_time = Moment().toDate();
                     })];
             });
         });
     };
-    return Einsatzberichte;
+    return UelzenTV;
 }());
-exports.Einsatzberichte = Einsatzberichte;
+exports.UelzenTV = UelzenTV;
+//# sourceMappingURL=UelzenTV.js.map

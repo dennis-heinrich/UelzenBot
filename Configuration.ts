@@ -4,19 +4,23 @@ module.exports = {
     },
     Telegram: {
         Enabled: true,
-        ChatId: -1001266018619,
-        BotToken: "1012885395:AAGb798lkuGY5hfPXkH0LMxZDa-DxGzNryE",
+        ChatId: -100000000,
+        BotToken: "",
     },
     Discord: {
         Enabled: false,
-        WebHook: "https://discordapp.com/api/webhooks/654893162157965352/k7n-BMCwBbn1dnQuWOtOvbyU7Z6sFVNNCrE68kKKCvnQQbK-Q-zDAmEpvVim3K2wGAWJ",
+        WebHook: "",
     },
     Services: {
         AZ_Online: {
             Enabled: true,
             ServiceFeedUrl: "https://www.az-online.de/uelzen/rssfeed.rdf",
         },
-        Einsatzberichte: {
+        UelzenTV: {
+            Enabled: true,
+            ServiceFeedUrl: "https://www.uelzen-tv.com/nachrichten-aktuelles-uelzen?format=feed&type=rss",
+        },
+        FF_UE_Einsatzberichte: {
             Enabled: true,
             ServiceFeedUrl: "https://feuerwehr-uelzen.de/einsaetze/feed/",
         }

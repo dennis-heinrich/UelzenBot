@@ -11,8 +11,9 @@ const request = require("request");
 const {JSDOM} = require("jsdom");
 
 export class AZ_Online implements IService {
+    id: string = "az_online";
     name: string = "AZ Online";
-    store: ServiceDataStore = new ServiceDataStore(this.name);
+    store: ServiceDataStore = new ServiceDataStore(this.id);
 
     current_count: number = 0;
     _request: any = request;
