@@ -28,40 +28,38 @@ export class UelzenTV implements IService {
         return this.current_count;
     }
 
-    public async UpdateServiceTick() : Promise<void> {
-        return new Promise<void>(resolve => {
-            let that = this;
-            this._request(Configuration.Services.UelzenTV.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
-                let stream = this, Post;
-                while(Post = stream.read()) {
-                    let NewMessage = new Message();
-                    NewMessage.setCreationTime(Moment(Post.pubdate).toDate());
-                    NewMessage.setTitle(Post.title);
-                    NewMessage.setMessage("");
-                    NewMessage.setWebLinkUrl(Post.link);
-                    NewMessage.setContentOwner("Uelzen TV");
+    public UpdateServiceTick() {
+        let that = this;
+        this._request(Configuration.Services.UelzenTV.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
+            let stream = this, Post;
+            while(Post = stream.read()) {
+                let NewMessage = new Message();
+                NewMessage.setCreationTime(Moment(Post.pubdate).toDate());
+                NewMessage.setTitle(Post.title);
+                NewMessage.setMessage("");
+                NewMessage.setWebLinkUrl(Post.link);
+                NewMessage.setContentOwner("Uelzen TV");
 
-                    //console.log(that.store.IsStored(NewMessage));
-                    if(!that.store.IsStored(NewMessage)) {
-                        console.info(" * "+ that.name + ": " + NewMessage.getTitle());
-                        that.store.Store(NewMessage);
-                        that.AddUpdatedMessage();
+                //console.log(that.store.IsStored(NewMessage));
+                if(!that.store.IsStored(NewMessage)) {
+                    console.info(" * "+ that.name + ": " + NewMessage.getTitle());
+                    that.store.Store(NewMessage);
+                    that.AddUpdatedMessage();
 
-                        JSDOM.fromURL(NewMessage.getWebLinkUrl()).then(dom => {
-                            try {
-                                let image = dom.window.document.querySelector("article p img");
+                    JSDOM.fromURL(NewMessage.getWebLinkUrl()).then(dom => {
+                        try {
+                            let image = dom.window.document.querySelector("article p img");
 
-                                if(image) {
-                                    NewMessage.setImageUrl(image.src);
-                                    AllMessageSplitter.SplitMessage(NewMessage);
-                                }
-                            } catch (e) {
-                                console.error(e);
+                            if(image) {
+                                NewMessage.setImageUrl(image.src);
+                                AllMessageSplitter.SplitMessage(NewMessage);
                             }
-                        });
-                    }
+                        } catch (e) {
+                            console.error(e);
+                        }
+                    });
                 }
-            });
+            }
         });
     }
 }

@@ -14,8 +14,8 @@ export interface IServiceDataStore {
     Store(Message: IMessage): void;
     IsStored(Message: IMessage): boolean;
 
-    LoadPersist(Message: IMessage): Promise<void>;
-    SavePersist(): Promise<void>;
+    LoadPersist(Message: IMessage);
+    SavePersist();
 }
 
 export class ServiceDataStore implements IServiceDataStore{
@@ -50,42 +50,36 @@ export class ServiceDataStore implements IServiceDataStore{
         return Stored;
     }
 
-    public SavePersist(): Promise<void> {
-        return new Promise(resolve => {
-            let Path = __dirname  + "/../Data/Store/"+this.GetName()+".json";
-            FS.writeFile(Path, JSON.stringify(this.MessageStore), 'utf8', function (err) {
-                if(err) {
-                    console.log(" ! * ! Fehler beim schreiben des Data-Stores ! * !");
-                    return console.log(err);
-                }
-            });
+    public SavePersist() {
+        let Path = __dirname  + "/../../Data/"+this.GetName()+".json";
+        FS.writeFile(Path, JSON.stringify(this.MessageStore), function (err) {
+            if(err) throw err;
+            console.log("Save!");
         });
     }
 
-    public LoadPersist(): Promise<void> {
-        return new Promise(resolve => {
-            let that = this;
-            let Path = __dirname + "/../Data/Store/"+this.GetName()+".json";
-            if(FS.existsSync(Path)) {
-                FS.readFile(Path,'utf8', function (err, Data) {
-                    if(err) {
-                        console.log(" ! * ! Fehler beim lesen des Data-Stores ! * !");
-                        return console.log(err);
-                    }
+    public LoadPersist() {
+        let that = this;
+        let Path = __dirname + "/../../Data/"+this.GetName()+".json";
+        if(FS.existsSync(Path)) {
+            FS.readFile(Path,'utf8', function (err, Data) {
+                if(err) {
+                    console.log(" ! * ! Fehler beim lesen des Data-Stores ! * !");
+                    return console.log(err);
+                }
 
-                    let Object = JSON.parse(Data);
-                    for(let i = 0; i < Object.length; i++) {
-                        let NMessage = new Message();
-                        NMessage.setTitle(Object[i].title);
-                        NMessage.setImageUrl(Object[i].image_url);
-                        NMessage.setMessage(Object[i].message);
-                        NMessage.setWebLinkUrl(Object[i].link);
-                        NMessage.setContentOwner(Object[i].content_owner);
-                        NMessage.setCreationTime(Moment(Object[i].date_time));
-                        that.MessageStore.push(NMessage);
-                    }
-                });
-            }
-        });
+                let Object = JSON.parse(Data);
+                for(let i = 0; i < Object.length; i++) {
+                    let NMessage = new Message();
+                    NMessage.setTitle(Object[i].title);
+                    NMessage.setImageUrl(Object[i].image_url);
+                    NMessage.setMessage(Object[i].message);
+                    NMessage.setWebLinkUrl(Object[i].link);
+                    NMessage.setContentOwner(Object[i].content_owner);
+                    NMessage.setCreationTime(Moment(Object[i].date_time));
+                    that.MessageStore.push(NMessage);
+                }
+            });
+        }
     }
 }

@@ -2,7 +2,7 @@
   "name": "uelzen_bot",
   "version": "1.0.0",
   "description": "",
-  "main": "Main.js",
+  "main": "Build/Main.js",
   "scripts": {
     "start": "node Build/Main.js"
   },
