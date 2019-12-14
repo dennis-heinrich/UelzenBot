@@ -1,4 +1,5 @@
 /node_modules/
 /.gitignore/
 /.idea/
+/Build/
 Configuration.ts
