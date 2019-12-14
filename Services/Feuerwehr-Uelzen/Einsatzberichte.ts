@@ -1,14 +1,36 @@
 import {IService} from "../../Interfaces/IService";
 import {Message} from "../../Interfaces/Messages/Message";
 import {AllMessageSplitter} from "../../Helper/All";
+import {IMessage} from "../../Interfaces/Messages/IMessage";
 
 const Configuration = require("../../Configuration");
 const FeedParser = require("feedparser");
 const Moment = require("Moment");
 const request = require("request");
 
+class EinsatzberichteStore {
+    private MessageStore: IMessage[] = [];
+
+    public Store(Message: IMessage) {
+        this.MessageStore.push(Message);
+    }
+
+    public IsStored(Message: IMessage) {
+        let Stored = false;
+
+        for (let i = 0; i < this.MessageStore.length; i++) {
+            if(this.MessageStore[i].getTitle() === Message.getTitle()) {
+                Stored = true;
+            }
+        }
+
+        return Stored;
+    }
+}
+
 export class Einsatzberichte implements IService{
     name: string = "Feuerwehr Uelzen";
+    store: EinsatzberichteStore = new EinsatzberichteStore();
     current_count: number = 0;
     last_time: Date = Moment().toDate();
     _request: any = request;
@@ -39,7 +61,9 @@ export class Einsatzberichte implements IService{
                     NewMessage.setWebLinkUrl(Post.link);
                     NewMessage.setContentOwner("Feuerwehr Uelzen - Einsatz");
 
-                    if(Moment(NewMessage.getCreationTime()).isAfter(that.last_time)) {
+                    if(!that.store.IsStored(NewMessage)) {
+                        that.store.Store(NewMessage);
+                        console.log(NewMessage.getTitle());
                         that.AddUpdatedMessage();
                         AllMessageSplitter.SplitMessage(NewMessage);
                     }

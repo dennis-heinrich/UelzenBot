@@ -42,9 +42,28 @@ var Configuration = require("../../Configuration");
 var FeedParser = require("feedparser");
 var Moment = require("Moment");
 var request = require("request");
+var EinsatzberichteStore = /** @class */ (function () {
+    function EinsatzberichteStore() {
+        this.MessageStore = [];
+    }
+    EinsatzberichteStore.prototype.Store = function (Message) {
+        this.MessageStore.push(Message);
+    };
+    EinsatzberichteStore.prototype.IsStored = function (Message) {
+        var Stored = false;
+        for (var i = 0; i < this.MessageStore.length; i++) {
+            if (this.MessageStore[i].getTitle() === Message.getTitle()) {
+                Stored = true;
+            }
+        }
+        return Stored;
+    };
+    return EinsatzberichteStore;
+}());
 var Einsatzberichte = /** @class */ (function () {
     function Einsatzberichte() {
         this.name = "Feuerwehr Uelzen";
+        this.store = new EinsatzberichteStore();
         this.current_count = 0;
         this.last_time = Moment().toDate();
         this._request = request;
@@ -74,7 +93,9 @@ var Einsatzberichte = /** @class */ (function () {
                                 NewMessage.setImageUrl(null);
                                 NewMessage.setWebLinkUrl(Post.link);
                                 NewMessage.setContentOwner("Feuerwehr Uelzen - Einsatz");
-                                if (Moment(NewMessage.getCreationTime()).isAfter(that.last_time)) {
+                                if (!that.store.IsStored(NewMessage)) {
+                                    that.store.Store(NewMessage);
+                                    console.log(NewMessage.getTitle());
                                     that.AddUpdatedMessage();
                                     All_1.AllMessageSplitter.SplitMessage(NewMessage);
                                 }
