@@ -27,10 +27,10 @@ export class Main {
             this.RegisterService(new UelzenTV());
         }
 
-        this.Inital_Load();
+        this.Initial_Load();
     }
 
-    private Inital_Load() {
+    private Initial_Load() {
         this.LoadServiceDataStorage();
     }
 
