@@ -6,14 +6,15 @@ import {ServiceDataStore} from "../../Helper/ServiceDataStore";
 const Configuration = require("../../Configuration");
 const FeedParser = require("feedparser");
 const Moment = require("Moment");
-const request = require("request");
+const Request = require("request");
+const {JSDOM} = require("jsdom");
 
-export class Einsatzberichte implements IService {
-    id: string = "feuerwehr_uelzen";
-    name: string = "Feuerwehr Uelzen";
+export class UelzenTV implements IService {
+    id: string = "uelzen_tv";
+    name: string = "Uelzen-TV";
     store: ServiceDataStore = new ServiceDataStore(this.id);
     current_count: number = 0;
-    _request: any = request;
+    _request: any = Request;
 
     AddUpdatedMessage() {
         this.current_count += 1;
@@ -30,22 +31,34 @@ export class Einsatzberichte implements IService {
     public async UpdateServiceTick() : Promise<void> {
         return new Promise<void>(resolve => {
             let that = this;
-            this._request(Configuration.Services.FF_UE_Einsatzberichte.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
+            this._request(Configuration.Services.UelzenTV.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
                 let stream = this, Post;
                 while(Post = stream.read()) {
                     let NewMessage = new Message();
                     NewMessage.setCreationTime(Moment(Post.pubdate).toDate());
-                    NewMessage.setTitle(Post.title.replace(' – – ',' - '));
+                    NewMessage.setTitle(Post.title);
                     NewMessage.setMessage("");
-                    NewMessage.setImageUrl(null);
                     NewMessage.setWebLinkUrl(Post.link);
-                    NewMessage.setContentOwner("Feuerwehr Uelzen - Einsatz");
+                    NewMessage.setContentOwner("Uelzen TV");
 
+                    //console.log(that.store.IsStored(NewMessage));
                     if(!that.store.IsStored(NewMessage)) {
+                        console.info(" * "+ that.name + ": " + NewMessage.getTitle());
                         that.store.Store(NewMessage);
-                        console.info(" * "+ that.name + ": " + NewMessage.getTitle() + " - " + NewMessage.getCreationTime().toLocaleString());
                         that.AddUpdatedMessage();
-                        AllMessageSplitter.SplitMessage(NewMessage);
+
+                        JSDOM.fromURL(NewMessage.getWebLinkUrl()).then(dom => {
+                            try {
+                                let image = dom.window.document.querySelector("article p img");
+
+                                if(image) {
+                                    NewMessage.setImageUrl(image.src);
+                                    AllMessageSplitter.SplitMessage(NewMessage);
+                                }
+                            } catch (e) {
+                                console.error(e);
+                            }
+                        });
                     }
                 }
             });

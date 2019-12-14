@@ -45,10 +45,10 @@ var Moment = require("Moment");
 var request = require("request");
 var Einsatzberichte = /** @class */ (function () {
     function Einsatzberichte() {
+        this.id = "feuerwehr_uelzen";
         this.name = "Feuerwehr Uelzen";
-        this.store = new ServiceDataStore_1.ServiceDataStore(this.name);
+        this.store = new ServiceDataStore_1.ServiceDataStore(this.id);
         this.current_count = 0;
-        this.last_time = Moment().toDate();
         this._request = request;
     }
     Einsatzberichte.prototype.AddUpdatedMessage = function () {
@@ -84,7 +84,6 @@ var Einsatzberichte = /** @class */ (function () {
                                 }
                             }
                         });
-                        that.last_time = Moment().toDate();
                     })];
             });
         });

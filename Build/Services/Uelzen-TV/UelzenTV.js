@@ -39,71 +39,71 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Message_1 = require("../../Interfaces/Messages/Message");
 var All_1 = require("../../Helper/Messenger/All");
 var ServiceDataStore_1 = require("../../Helper/ServiceDataStore");
-// Require statements
 var Configuration = require("../../Configuration");
 var FeedParser = require("feedparser");
 var Moment = require("Moment");
-var request = require("request");
+var Request = require("request");
 var JSDOM = require("jsdom").JSDOM;
-var AZ_Online = /** @class */ (function () {
-    function AZ_Online() {
-        this.id = "az_online";
-        this.name = "AZ Online";
+var UelzenTV = /** @class */ (function () {
+    function UelzenTV() {
+        this.id = "uelzen_tv";
+        this.name = "Uelzen-TV";
         this.store = new ServiceDataStore_1.ServiceDataStore(this.id);
         this.current_count = 0;
-        this._request = request;
+        this._request = Request;
     }
-    AZ_Online.prototype.AddUpdatedMessage = function () {
+    UelzenTV.prototype.AddUpdatedMessage = function () {
         this.current_count += 1;
     };
-    AZ_Online.prototype.GetUpdatedMessages = function () {
-        return this.current_count;
-    };
-    AZ_Online.prototype.ClearUpdatedMessages = function () {
+    UelzenTV.prototype.ClearUpdatedMessages = function () {
         this.current_count = 0;
     };
-    AZ_Online.prototype.UpdateServiceTick = function () {
+    UelzenTV.prototype.GetUpdatedMessages = function () {
+        return this.current_count;
+    };
+    UelzenTV.prototype.UpdateServiceTick = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var that;
+            var _this = this;
             return __generator(this, function (_a) {
-                that = this;
-                this._request(Configuration.Services.AZ_Online.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
-                    var stream = this, Post;
-                    var _loop_1 = function () {
-                        var NewMessage = new Message_1.Message();
-                        NewMessage.setCreationTime(Moment(Post.pubdate).toDate());
-                        NewMessage.setTitle(Post.title);
-                        NewMessage.setMessage(Post.description);
-                        NewMessage.setWebLinkUrl(Post.link);
-                        NewMessage.setContentOwner("AZ-Online");
-                        //console.log(that.store.IsStored(NewMessage));
-                        if (!that.store.IsStored(NewMessage)) {
-                            console.info(" * " + that.name + ": " + NewMessage.getTitle());
-                            that.store.Store(NewMessage);
-                            that.AddUpdatedMessage();
-                            JSDOM.fromURL(NewMessage.getWebLinkUrl()).then(function (dom) {
-                                try {
-                                    var image = dom.window.document.querySelector("img");
-                                    if (dom.window.document.querySelector("img")) {
-                                        NewMessage.setImageUrl(image.src);
-                                        All_1.AllMessageSplitter.SplitMessage(NewMessage);
-                                    }
+                return [2 /*return*/, new Promise(function (resolve) {
+                        var that = _this;
+                        _this._request(Configuration.Services.UelzenTV.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
+                            var stream = this, Post;
+                            var _loop_1 = function () {
+                                var NewMessage = new Message_1.Message();
+                                NewMessage.setCreationTime(Moment(Post.pubdate).toDate());
+                                NewMessage.setTitle(Post.title);
+                                NewMessage.setMessage("");
+                                NewMessage.setWebLinkUrl(Post.link);
+                                NewMessage.setContentOwner("Uelzen TV");
+                                //console.log(that.store.IsStored(NewMessage));
+                                if (!that.store.IsStored(NewMessage)) {
+                                    console.info(" * " + that.name + ": " + NewMessage.getTitle());
+                                    that.store.Store(NewMessage);
+                                    that.AddUpdatedMessage();
+                                    JSDOM.fromURL(NewMessage.getWebLinkUrl()).then(function (dom) {
+                                        try {
+                                            var image = dom.window.document.querySelector("article p img");
+                                            if (image) {
+                                                NewMessage.setImageUrl(image.src);
+                                                All_1.AllMessageSplitter.SplitMessage(NewMessage);
+                                            }
+                                        }
+                                        catch (e) {
+                                            console.error(e);
+                                        }
+                                    });
                                 }
-                                catch (e) {
-                                    console.error(e);
-                                }
-                            });
-                        }
-                    };
-                    while (Post = stream.read()) {
-                        _loop_1();
-                    }
-                });
-                return [2 /*return*/];
+                            };
+                            while (Post = stream.read()) {
+                                _loop_1();
+                            }
+                        });
+                    })];
             });
         });
     };
-    return AZ_Online;
+    return UelzenTV;
 }());
-exports.AZ_Online = AZ_Online;
-//# sourceMappingURL=AZ-Online.js.map
+exports.UelzenTV = UelzenTV;
+//# sourceMappingURL=UelzenTV.js.map
