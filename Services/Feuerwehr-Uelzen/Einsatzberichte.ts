@@ -5,7 +5,7 @@ import {ServiceDataStore} from "../../Helper/ServiceDataStore";
 
 const Configuration = require("../../Configuration");
 const FeedParser = require("feedparser");
-const Moment = require("Moment");
+const Moment = require("moment");
 const request = require("request");
 
 export class Einsatzberichte implements IService {

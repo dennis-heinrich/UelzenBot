@@ -42,7 +42,7 @@ var ServiceDataStore_1 = require("../../Helper/ServiceDataStore");
 // Require statements
 var Configuration = require("../../Configuration");
 var FeedParser = require("feedparser");
-var Moment = require("Moment");
+var Moment = require("moment");
 var request = require("request");
 var JSDOM = require("jsdom").JSDOM;
 var AZ_Online = /** @class */ (function () {
