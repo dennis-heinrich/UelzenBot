@@ -39,3 +39,4 @@ MainService.UpdateServices();
 setInterval(function () {
     MainService.UpdateServices();
 }, Configuration.General.UpdateInterval);
+//# sourceMappingURL=Main.js.map

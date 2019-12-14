@@ -37,30 +37,72 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Message_1 = require("../../Interfaces/Messages/Message");
-var Webhook = require("webhook-discord");
+var All_1 = require("../../Helper/Messenger/All");
+var ServiceDataStore_1 = require("../../Helper/ServiceDataStore");
+// Require statements
 var Configuration = require("../../Configuration");
-var Hook = new Webhook.Webhook(Configuration.Discord.WebHook);
-var DiscordHelper = /** @class */ (function () {
-    function DiscordHelper() {
+var FeedParser = require("feedparser");
+var Moment = require("Moment");
+var request = require("request");
+var JSDOM = require("jsdom").JSDOM;
+var AZ_Online = /** @class */ (function () {
+    function AZ_Online() {
+        this.name = "AZ Online";
+        this.store = new ServiceDataStore_1.ServiceDataStore(this.name);
+        this.current_count = 0;
+        this._request = request;
     }
-    DiscordHelper.CreateDiscordMessage = function (NMessage) {
+    AZ_Online.prototype.AddUpdatedMessage = function () {
+        this.current_count += 1;
+    };
+    AZ_Online.prototype.GetUpdatedMessages = function () {
+        return this.current_count;
+    };
+    AZ_Online.prototype.ClearUpdatedMessages = function () {
+        this.current_count = 0;
+    };
+    AZ_Online.prototype.UpdateServiceTick = function () {
         return __awaiter(this, void 0, void 0, function () {
+            var that;
             return __generator(this, function (_a) {
-                return [2 /*return*/, new Promise(function (resolve) {
-                        if (Configuration.Discord.Enabled) {
-                            var WebhookMessage = new Webhook.MessageBuilder().setText(Message_1.Message.BuildMessageMarkdown(NMessage));
-                            if (NMessage.getImageUrl() != null || NMessage.getImageUrl() != "" || NMessage.getImageUrl() != undefined) {
-                                WebhookMessage = new Webhook.MessageBuilder().setText(Message_1.Message.BuildMessageMarkdown(NMessage)).setImage(NMessage.getImageUrl());
-                            }
-                            WebhookMessage.setName(NMessage.getContentOwner());
-                            Hook.send(WebhookMessage).catch(function (error) {
-                                console.log(error);
+                that = this;
+                this._request(Configuration.Services.AZ_Online.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
+                    var stream = this, Post;
+                    var _loop_1 = function () {
+                        var NewMessage = new Message_1.Message();
+                        NewMessage.setCreationTime(Moment(Post.pubdate).toDate());
+                        NewMessage.setTitle(Post.title);
+                        NewMessage.setMessage(Post.description);
+                        NewMessage.setWebLinkUrl(Post.link);
+                        NewMessage.setContentOwner("AZ-Online");
+                        //console.log(that.store.IsStored(NewMessage));
+                        if (!that.store.IsStored(NewMessage)) {
+                            console.info(" * " + that.name + ": " + NewMessage.getTitle());
+                            that.store.Store(NewMessage);
+                            that.AddUpdatedMessage();
+                            JSDOM.fromURL(NewMessage.getWebLinkUrl()).then(function (dom) {
+                                try {
+                                    var image = dom.window.document.querySelector("img");
+                                    if (dom.window.document.querySelector("img")) {
+                                        NewMessage.setImageUrl(image.src);
+                                        All_1.AllMessageSplitter.SplitMessage(NewMessage);
+                                    }
+                                }
+                                catch (e) {
+                                    console.error(e);
+                                }
                             });
                         }
-                    })];
+                    };
+                    while (Post = stream.read()) {
+                        _loop_1();
+                    }
+                });
+                return [2 /*return*/];
             });
         });
     };
-    return DiscordHelper;
+    return AZ_Online;
 }());
-exports.DiscordHelper = DiscordHelper;
+exports.AZ_Online = AZ_Online;
+//# sourceMappingURL=AZ-Online.js.map

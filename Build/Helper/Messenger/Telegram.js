@@ -72,3 +72,4 @@ var TelegramHelper = /** @class */ (function () {
     return TelegramHelper;
 }());
 exports.TelegramHelper = TelegramHelper;
+//# sourceMappingURL=Telegram.js.map
