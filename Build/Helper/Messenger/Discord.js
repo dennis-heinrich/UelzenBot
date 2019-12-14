@@ -39,7 +39,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Message_1 = require("../../Interfaces/Messages/Message");
 var Webhook = require("webhook-discord");
 var Configuration = require("../../Configuration");
-var Hook = new Webhook.Webhook(Configuration.Discord.WebHook);
 var DiscordHelper = /** @class */ (function () {
     function DiscordHelper() {
     }
@@ -48,6 +47,7 @@ var DiscordHelper = /** @class */ (function () {
             return __generator(this, function (_a) {
                 return [2 /*return*/, new Promise(function (resolve) {
                         if (Configuration.Discord.Enabled) {
+                            var Hook = new Webhook.Webhook(Configuration.Discord.WebHook);
                             var WebhookMessage = new Webhook.MessageBuilder().setText(Message_1.Message.BuildMessageMarkdown(NMessage));
                             if (NMessage.getImageUrl() != null || NMessage.getImageUrl() != "" || NMessage.getImageUrl() != undefined) {
                                 WebhookMessage = new Webhook.MessageBuilder().setText(Message_1.Message.BuildMessageMarkdown(NMessage)).setImage(NMessage.getImageUrl());
