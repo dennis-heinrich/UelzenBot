@@ -1,8 +1,8 @@
-import {IMessage} from "../Interfaces/Messages/IMessage";
-import {Message} from "../Interfaces/Messages/Message";
+import {IMessage} from "../../Interfaces/Messages/IMessage";
+import {Message} from "../../Interfaces/Messages/Message";
 
 const Telegram = require('telegraf/telegram');
-const Configuration = require('../Configuration');
+const Configuration = require('../../Configuration');
 
 export class TelegramHelper {
     public static async CreateTelegramMessage(NMessage: IMessage) : Promise<void> {

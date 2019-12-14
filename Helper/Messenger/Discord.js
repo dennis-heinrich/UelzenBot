@@ -36,9 +36,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Message_1 = require("../Interfaces/Messages/Message");
+var Message_1 = require("../../Interfaces/Messages/Message");
 var Webhook = require("webhook-discord");
-var Configuration = require("../Configuration");
+var Configuration = require("../../Configuration");
 var Hook = new Webhook.Webhook(Configuration.Discord.WebHook);
 var DiscordHelper = /** @class */ (function () {
     function DiscordHelper() {

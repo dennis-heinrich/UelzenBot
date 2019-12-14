@@ -1,8 +1,8 @@
-import {Message} from "../Interfaces/Messages/Message";
-import {IMessage} from "../Interfaces/Messages/IMessage";
+import {Message} from "../../Interfaces/Messages/Message";
+import {IMessage} from "../../Interfaces/Messages/IMessage";
 
 const Webhook = require("webhook-discord");
-const Configuration = require("../Configuration");
+const Configuration = require("../../Configuration");
 const Hook = new Webhook.Webhook(Configuration.Discord.WebHook);
 
 export class DiscordHelper {

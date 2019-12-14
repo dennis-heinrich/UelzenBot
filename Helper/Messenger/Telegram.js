@@ -36,9 +36,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Message_1 = require("../Interfaces/Messages/Message");
+var Message_1 = require("../../Interfaces/Messages/Message");
 var Telegram = require('telegraf/telegram');
-var Configuration = require('../Configuration');
+var Configuration = require('../../Configuration');
 var TelegramHelper = /** @class */ (function () {
     function TelegramHelper() {
     }

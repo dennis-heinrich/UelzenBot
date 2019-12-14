@@ -37,35 +37,18 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Message_1 = require("../../Interfaces/Messages/Message");
-var All_1 = require("../../Helper/All");
+var All_1 = require("../../Helper/Messenger/All");
+var ServiceDataStore_1 = require("../../Helper/ServiceDataStore");
 // Require statements
 var Configuration = require("../../Configuration");
 var FeedParser = require("feedparser");
 var Moment = require("Moment");
 var request = require("request");
 var JSDOM = require("jsdom").JSDOM;
-var AZ_OnlineStore = /** @class */ (function () {
-    function AZ_OnlineStore() {
-        this.MessageStore = [];
-    }
-    AZ_OnlineStore.prototype.Store = function (Message) {
-        this.MessageStore.push(Message);
-    };
-    AZ_OnlineStore.prototype.IsStored = function (Message) {
-        var Stored = false;
-        for (var i = 0; i < this.MessageStore.length; i++) {
-            if (this.MessageStore[i].getTitle() === Message.getTitle()) {
-                Stored = true;
-            }
-        }
-        return Stored;
-    };
-    return AZ_OnlineStore;
-}());
 var AZ_Online = /** @class */ (function () {
     function AZ_Online() {
         this.name = "AZ Online";
-        this.store = new AZ_OnlineStore();
+        this.store = new ServiceDataStore_1.ServiceDataStore(this.name);
         this.current_count = 0;
         this._request = request;
     }

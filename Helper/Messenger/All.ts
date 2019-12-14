@@ -1,4 +1,4 @@
-import {IMessage} from "../Interfaces/Messages/IMessage";
+import {IMessage} from "../../Interfaces/Messages/IMessage";
 import {TelegramHelper} from "./Telegram";
 import {DiscordHelper} from "./Discord";
 
