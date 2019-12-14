@@ -4,12 +4,12 @@ module.exports = {
     },
     Telegram: {
         Enabled: true,
-        ChatId: -1001266018619,
-        BotToken: "863244396:AAGZdZ3dZmk5-SZJ0TlLO0vdLuYyYt42mfw",
+        ChatId: -100000000,
+        BotToken: "XXXXXXXXXX",
     },
     Discord: {
         Enabled: false,
-        WebHook: "",
+        WebHook: "XXXXXXXXX",
     },
     Services: {
         AZ_Online: {

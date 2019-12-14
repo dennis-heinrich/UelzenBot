@@ -2,6 +2,7 @@ import {AZ_Online} from "./Services/AZ-Online/AZ-Online";
 import {IService} from "./Interfaces/IService";
 import {Einsatzberichte} from "./Services/Feuerwehr-Uelzen/Einsatzberichte";
 import {UelzenTV} from "./Services/Uelzen-TV/UelzenTV";
+import {HansestadtUelzen} from "./Services/Hansestadt-Uelzen/Hansestadt-Uelzen";
 
 // Require constants
 const Configuration = require("./Configuration");
@@ -31,6 +32,12 @@ export class Main {
             if(Configuration.Services.UelzenTV.Enabled) {
                 this.RegisterService(new UelzenTV());
             }
+
+            // Hansestadt Uelzen
+            if(Configuration.Services.Hansestadt_Uelzen.Enabled) {
+                this.RegisterService(new HansestadtUelzen());
+            }
+
             this.Initial_Load();
         } else {
             console.error(" ! ! ! Die Konfigurationsdatei der Services ist nicht korrekt! (Evtl. Konfigurationsfehler?)");

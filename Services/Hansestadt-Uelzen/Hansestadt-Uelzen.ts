@@ -37,13 +37,14 @@ export class HansestadtUelzen implements IService {
                 let NewMessage = new Message();
                 NewMessage.setCreationTime(Moment().toDate());
                 NewMessage.setTitle(Post.title);
-                NewMessage.setMessage(Post.description);
                 NewMessage.setWebLinkUrl(Post.link);
+                NewMessage.setMessage("");
                 NewMessage.setContentOwner(that.name);
 
                 if(!that.store.IsStored(NewMessage)) {
                     console.info(" * "+ that.name + ": " + NewMessage.getTitle());
                     that.store.Store(NewMessage);
+                    AllMessageSplitter.SplitMessage(NewMessage);
                     that.AddUpdatedMessage();
                 }
             }
