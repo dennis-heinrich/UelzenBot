@@ -15,14 +15,14 @@ export class TelegramHelper {
                     TelegramC.sendPhoto(Configuration.Telegram.ChatId, NMessage.getImageUrl(), {
                         caption: Message.BuildMessageMarkdown(NMessage),
                         parse_mode: "Markdown"
-                    }).catch(function () {
-                        console.log("Bad promise");
+                    }).catch(function (e) {
+                        console.log(e);
                     });
                 } else {
                     TelegramC.sendMessage(Configuration.Telegram.ChatId, Message.BuildMessageMarkdown(NMessage), {
                         parse_mode: "Markdown"
-                    }).catch(function () {
-                        console.log("Bad promise");
+                    }).catch(function (e) {
+                        console.log(e);
                     });
                 }
             }

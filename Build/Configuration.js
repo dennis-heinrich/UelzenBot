@@ -16,7 +16,7 @@ module.exports = {
             Enabled: true,
             ServiceFeedUrl: "https://www.az-online.de/uelzen/rssfeed.rdf",
         },
-        Einsatzberichte: {
+        FF_UE_Einsatzberichte: {
             Enabled: true,
             ServiceFeedUrl: "https://feuerwehr-uelzen.de/einsaetze/feed/",
         }

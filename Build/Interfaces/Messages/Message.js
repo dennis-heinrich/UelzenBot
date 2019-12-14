@@ -17,19 +17,19 @@ var Message = /** @class */ (function () {
                         return "*" + NMessage.getContentOwner() + "*\n[" + NMessage.getTitle() + "](" + NMessage.getWebLinkUrl() + ")\nVon: _" + Moment(NMessage.getCreationTime()).format('lll') + "_";
                     }
                     else {
-                        return "*" + NMessage.getContentOwner() + "*\n[" + NMessage.getTitle() + "](" + NMessage.getWebLinkUrl() + ")\n" + NMessage.getMessage() + "\nVon: _" + Moment(NMessage.getCreationTime()).format('lll') + "_";
+                        return "*" + NMessage.getContentOwner() + "*\n[" + NMessage.getTitle() + "](" + NMessage.getWebLinkUrl() + ")\n" + Message.EscapeText(NMessage.getMessage()) + "\nVon: _" + Moment(NMessage.getCreationTime()).format('lll') + "_";
                     }
                 }
                 else {
-                    return "*" + NMessage.getContentOwner() + "*\n*" + NMessage.getTitle() + "*\n" + NMessage.getMessage();
+                    return "*" + NMessage.getContentOwner() + "*\n*" + NMessage.getTitle() + "*\n" + Message.EscapeText(NMessage.getMessage());
                 }
             }
             else {
-                return "*" + NMessage.getTitle() + "*\n" + NMessage.getMessage();
+                return "*" + NMessage.getTitle() + "*\n" + Message.EscapeText(NMessage.getMessage());
             }
         }
         else {
-            return "*" + NMessage.getMessage() + "*";
+            return "*" + Message.EscapeText(NMessage.getMessage()) + "*";
         }
     };
     Message.prototype.getContentOwner = function () {
@@ -43,6 +43,13 @@ var Message = /** @class */ (function () {
     };
     Message.prototype.getMessage = function () {
         return this.message;
+    };
+    Message.EscapeText = function (Message) {
+        return Message
+            .replace("_", "\\_")
+            .replace("*", "\\*")
+            .replace("[", "\\[")
+            .replace("`", "\\`");
     };
     Message.prototype.getTitle = function () {
         return this.title;

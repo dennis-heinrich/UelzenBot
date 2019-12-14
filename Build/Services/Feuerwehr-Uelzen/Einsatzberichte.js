@@ -66,7 +66,7 @@ var Einsatzberichte = /** @class */ (function () {
             return __generator(this, function (_a) {
                 return [2 /*return*/, new Promise(function (resolve) {
                         var that = _this;
-                        _this._request(Configuration.Services.Einsatzberichte.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
+                        _this._request(Configuration.Services.FF_UE_Einsatzberichte.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
                             var stream = this, Post;
                             while (Post = stream.read()) {
                                 var NewMessage = new Message_1.Message();

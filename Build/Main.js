@@ -14,7 +14,7 @@ var Main = /** @class */ (function () {
             this.RegisterService(new AZ_Online_1.AZ_Online());
         }
         // Feuerwehr Uelzen - Einsätze
-        if (Configuration.Services.Einsatzberichte.Enabled) {
+        if (Configuration.Services.FF_UE_Einsatzberichte.Enabled) {
             this.RegisterService(new Einsatzberichte_1.Einsatzberichte());
         }
     }
@@ -35,8 +35,10 @@ var Main = /** @class */ (function () {
 exports.Main = Main;
 var MainService = new Main();
 // Start Service Updater
-MainService.UpdateServices();
-setInterval(function () {
+setTimeout(function () {
     MainService.UpdateServices();
-}, Configuration.General.UpdateInterval);
+    setInterval(function () {
+        MainService.UpdateServices();
+    }, Configuration.General.UpdateInterval);
+}, 2000);
 //# sourceMappingURL=Main.js.map

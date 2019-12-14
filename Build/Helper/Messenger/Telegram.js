@@ -53,15 +53,15 @@ var TelegramHelper = /** @class */ (function () {
                                 TelegramC.sendPhoto(Configuration.Telegram.ChatId, NMessage.getImageUrl(), {
                                     caption: Message_1.Message.BuildMessageMarkdown(NMessage),
                                     parse_mode: "Markdown"
-                                }).catch(function () {
-                                    console.log("Bad promise");
+                                }).catch(function (e) {
+                                    console.log(e);
                                 });
                             }
                             else {
                                 TelegramC.sendMessage(Configuration.Telegram.ChatId, Message_1.Message.BuildMessageMarkdown(NMessage), {
                                     parse_mode: "Markdown"
-                                }).catch(function () {
-                                    console.log("Bad promise");
+                                }).catch(function (e) {
+                                    console.log(e);
                                 });
                             }
                         }

@@ -25,16 +25,16 @@ export class Message implements IMessage {
                     if(NMessage.getMessage() == "") {
                         return "*" + NMessage.getContentOwner() + "*\n[" + NMessage.getTitle() + "]("+NMessage.getWebLinkUrl()+")\nVon: _"+Moment(NMessage.getCreationTime()).format('lll')+"_";
                     } else {
-                        return "*" + NMessage.getContentOwner() + "*\n[" + NMessage.getTitle() + "]("+NMessage.getWebLinkUrl()+")\n" + NMessage.getMessage() + "\nVon: _"+Moment(NMessage.getCreationTime()).format('lll')+"_";
+                        return "*" + NMessage.getContentOwner() + "*\n[" + NMessage.getTitle() + "]("+NMessage.getWebLinkUrl()+")\n" + Message.EscapeText(NMessage.getMessage()) + "\nVon: _"+Moment(NMessage.getCreationTime()).format('lll')+"_";
                     }
                 } else {
-                    return "*" + NMessage.getContentOwner() + "*\n*" + NMessage.getTitle() + "*\n" + NMessage.getMessage();
+                    return "*" + NMessage.getContentOwner() + "*\n*" + NMessage.getTitle() + "*\n" + Message.EscapeText(NMessage.getMessage());
                 }
             } else {
-                return "*" + NMessage.getTitle() + "*\n" + NMessage.getMessage();
+                return "*" + NMessage.getTitle() + "*\n" + Message.EscapeText(NMessage.getMessage());
             }
         } else {
-            return "*" + NMessage.getMessage() + "*";
+            return "*" + Message.EscapeText(NMessage.getMessage()) + "*";
         }
     }
 
@@ -52,6 +52,14 @@ export class Message implements IMessage {
 
     getMessage(): string {
         return this.message;
+    }
+
+    static EscapeText(Message: string): string {
+        return Message
+            .replace("_", "\\_")
+            .replace("*", "\\*")
+            .replace("[", "\\[")
+            .replace("`", "\\`");
     }
 
     getTitle(): string {

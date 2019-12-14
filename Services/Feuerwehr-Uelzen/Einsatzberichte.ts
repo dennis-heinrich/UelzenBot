@@ -30,7 +30,7 @@ export class Einsatzberichte implements IService{
     public async UpdateServiceTick() : Promise<void> {
         return new Promise<void>(resolve => {
             let that = this;
-            this._request(Configuration.Services.Einsatzberichte.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
+            this._request(Configuration.Services.FF_UE_Einsatzberichte.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
                 let stream = this, Post;
                 while(Post = stream.read()) {
                     let NewMessage = new Message();

@@ -18,7 +18,7 @@ export class Main {
         }
 
         // Feuerwehr Uelzen - Einsätze
-        if(Configuration.Services.Einsatzberichte.Enabled) {
+        if(Configuration.Services.FF_UE_Einsatzberichte.Enabled) {
             this.RegisterService(new Einsatzberichte());
         }
     }
@@ -41,7 +41,9 @@ export class Main {
 let MainService = new Main();
 
 // Start Service Updater
-MainService.UpdateServices();
-setInterval(function () {
+setTimeout(function () {
     MainService.UpdateServices();
-}, Configuration.General.UpdateInterval);
+    setInterval(function () {
+        MainService.UpdateServices();
+    }, Configuration.General.UpdateInterval);
+}, 2000);
