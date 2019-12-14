@@ -30,7 +30,7 @@ export class AZ_Online implements IService {
         this.current_count = 0;
     }
 
-    public async UpdateServiceTick() {
+    public UpdateServiceTick() {
         let that = this;
         this._request(Configuration.Services.AZ_Online.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
             let stream = this, Post;
