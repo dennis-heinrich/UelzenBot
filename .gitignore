@@ -3,3 +3,4 @@
 /.idea/
 /Build/
 Configuration.ts
+package-lock.json
