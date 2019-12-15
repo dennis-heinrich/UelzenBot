@@ -45,7 +45,10 @@ export class Einsatzberichte implements IService {
                         that.store.Store(NewMessage);
                         console.info(" * "+ that.name + ": " + NewMessage.getTitle() + " - " + NewMessage.getCreationTime().toLocaleString());
                         that.AddUpdatedMessage();
-                        AllMessageSplitter.SplitMessage(NewMessage);
+                        AllMessageSplitter.SplitMessage(NewMessage).catch(function (reason) {
+                            console.error("Fehlermeldung: " + reason);
+                            that.store.StoreRollback(NewMessage);
+                        });
                     }
                 }
             });

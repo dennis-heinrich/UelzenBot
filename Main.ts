@@ -1,7 +1,10 @@
-import {AZ_Online} from "./Services/AZ-Online/AZ-Online";
 import {IService} from "./Interfaces/IService";
+
+// Eingebundene Dienste
+import {AZ_Online} from "./Services/AZ-Online/AZ-Online";
 import {Einsatzberichte} from "./Services/Feuerwehr-Uelzen/Einsatzberichte";
 import {UelzenTV} from "./Services/Uelzen-TV/UelzenTV";
+import {Verkehrsmeldungen} from "./Services/Verkehrsmeldungen/Verkehrsmeldungen";
 
 // Require constants
 const Configuration = require("./Configuration");
@@ -25,6 +28,10 @@ export class Main {
 
         if(Configuration.Services.UelzenTV.Enabled) {
             this.RegisterService(new UelzenTV());
+        }
+
+        if(Configuration.Services.Verkehrsmeldungen.Enabled) {
+            this.RegisterService(new Verkehrsmeldungen());
         }
 
         this.Initial_Load();

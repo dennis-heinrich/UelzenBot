@@ -22,22 +22,60 @@ export class ServiceDataStore implements IServiceDataStore{
     Name: string = "default";
     MessageStore: IMessage[] = [];
 
+    /**
+     * Loads the ServiceDataStore by given cache-id for file saving.
+     * @param Name
+     */
     constructor(Name: string) {
         this.SetName(Name);
     }
 
+    /**
+     * Sets the name of the current cache id for separate file-naming.
+     * @param Name
+     * @constructor
+     */
     public SetName(Name: string): void {
         this.Name = Name;
     }
 
+    /**
+     * Get the name of the current cache id for separate file-naming.
+     * @constructor
+     */
     public GetName(): string {
         return this.Name;
     }
 
+    /**
+     * Stores a message in the current cache.
+     * @param Message
+     * @constructor
+     */
     public Store(Message: IMessage): void {
         this.MessageStore.push(Message);
     }
 
+    /**
+     * Removes an IMessage Element in case of a callback error by the message handler.
+     * @param Message
+     * @constructor
+     */
+    public StoreRollback(Message: IMessage): void {
+        if(this.IsStored(Message)) {
+           for(let i = 0; i < this.MessageStore.length; i++) {
+               if(this.MessageStore[i].getTitle() === Message.getTitle()) {
+                   this.MessageStore.splice(i, 1);
+               }
+           }
+        }
+    }
+
+    /**
+     * Checks if the IMessage is not in storage yet.
+     * @param Message
+     * @constructor
+     */
     public IsStored(Message: IMessage): boolean {
         let Stored = false;
 
@@ -50,6 +88,10 @@ export class ServiceDataStore implements IServiceDataStore{
         return Stored;
     }
 
+    /**
+     * Persists the Store in the cache file.
+     * @constructor
+     */
     public SavePersist(): Promise<void> {
         return new Promise(resolve => {
             let FolderData = __dirname  + "/../Data/";
@@ -68,6 +110,10 @@ export class ServiceDataStore implements IServiceDataStore{
         });
     }
 
+    /**
+     * Loads the existing Store from the cache file.
+     * @constructor
+     */
     public LoadPersist(): Promise<void> {
         return new Promise(resolve => {
             let that = this;

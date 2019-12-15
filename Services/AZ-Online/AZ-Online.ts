@@ -55,7 +55,10 @@ export class AZ_Online implements IService {
 
                             if(dom.window.document.querySelector("img")) {
                                 NewMessage.setImageUrl(image.src);
-                                AllMessageSplitter.SplitMessage(NewMessage);
+                                AllMessageSplitter.SplitMessage(NewMessage).catch(function (reason) {
+                                    console.error("Fehlermeldung: " + reason);
+                                    that.store.StoreRollback(NewMessage);
+                                });
                             }
                         } catch (e) {
                             console.error(e);
