@@ -52,7 +52,13 @@ export class ServiceDataStore implements IServiceDataStore{
 
     public SavePersist(): Promise<void> {
         return new Promise(resolve => {
-            let Path = __dirname  + "/../Data/Store/"+this.GetName()+".json";
+            let FolderData = __dirname  + "/../Data/";
+            let Folder = __dirname  + "/../Data/Store/";
+            let Path = Folder+this.GetName()+".json";
+
+            !FS.existsSync(FolderData) && FS.mkdirSync(FolderData);
+            !FS.existsSync(Folder) && FS.mkdirSync(Folder);
+
             FS.writeFile(Path, JSON.stringify(this.MessageStore), 'utf8', function (err) {
                 if(err) {
                     console.log(" ! * ! Fehler beim schreiben des Data-Stores ! * !");
@@ -65,7 +71,9 @@ export class ServiceDataStore implements IServiceDataStore{
     public LoadPersist(): Promise<void> {
         return new Promise(resolve => {
             let that = this;
-            let Path = __dirname + "/../Data/Store/"+this.GetName()+".json";
+            let Folder = __dirname  + "/../Data/Store/";
+            let Path = Folder+this.GetName()+".json";
+
             if(FS.existsSync(Path)) {
                 FS.readFile(Path,'utf8', function (err, Data) {
                     if(err) {
