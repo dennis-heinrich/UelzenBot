@@ -27,31 +27,29 @@ export class Einsatzberichte implements IService {
         return this.current_count;
     }
 
-    public async UpdateServiceTick() : Promise<void> {
-        return new Promise<void>(resolve => {
-            let that = this;
-            this._request(Configuration.Services.FF_UE_Einsatzberichte.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
-                let stream = this, Post;
-                while(Post = stream.read()) {
-                    let NewMessage = new Message();
-                    NewMessage.setCreationTime(Moment(Post.pubdate).toDate());
-                    NewMessage.setTitle(Post.title.replace(' – – ',' - '));
-                    NewMessage.setMessage("");
-                    NewMessage.setImageUrl(null);
-                    NewMessage.setWebLinkUrl(Post.link);
-                    NewMessage.setContentOwner("Feuerwehr Uelzen - Einsatz");
+    public UpdateServiceTick()  {
+        let that = this;
+        this._request(Configuration.Services.FF_UE_Einsatzberichte.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
+            let stream = this, Post;
+            while(Post = stream.read()) {
+                let NewMessage = new Message();
+                NewMessage.setCreationTime(Moment(Post.pubdate).toDate());
+                NewMessage.setTitle(Post.title.replace(' – – ',' - '));
+                NewMessage.setMessage("");
+                NewMessage.setImageUrl(null);
+                NewMessage.setWebLinkUrl(Post.link);
+                NewMessage.setContentOwner("Feuerwehr Uelzen - Einsatz");
 
-                    if(!that.store.IsStored(NewMessage)) {
-                        that.store.Store(NewMessage);
-                        console.info(" * "+ that.name + ": " + NewMessage.getTitle() + " - " + NewMessage.getCreationTime().toLocaleString());
-                        that.AddUpdatedMessage();
-                        AllMessageSplitter.SplitMessage(NewMessage).catch(function (reason) {
-                            console.error("Fehlermeldung: " + reason);
-                            that.store.StoreRollback(NewMessage);
-                        });
-                    }
+                if(!that.store.IsStored(NewMessage)) {
+                    that.store.Store(NewMessage);
+                    console.info(" * "+ that.name + ": " + NewMessage.getTitle() + " - " + NewMessage.getCreationTime().toLocaleString());
+                    that.AddUpdatedMessage();
+                    AllMessageSplitter.SplitMessage(NewMessage).catch(function (reason) {
+                        console.error("Fehlermeldung: " + reason);
+                        that.store.StoreRollback(NewMessage);
+                    });
                 }
-            });
+            }
         });
     }
 }

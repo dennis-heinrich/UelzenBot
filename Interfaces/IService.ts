@@ -8,9 +8,9 @@ export interface IService {
     store: ServiceDataStore;
 
     // Updates for the counting in cycle
-    AddUpdatedMessage();
-    GetUpdatedMessages();
-    ClearUpdatedMessages();
+    AddUpdatedMessage() : void;
+    GetUpdatedMessages() : number;
+    ClearUpdatedMessages() : void;
 
     // Called every cycle as service "broker"
     UpdateServiceTick();

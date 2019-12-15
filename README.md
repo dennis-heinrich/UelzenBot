@@ -1,4 +1,4 @@
-# UelzenBot
+# Uelzen Bot - Telegram Nachrichten
 Bot für zusammengefasste RSS Nachrichten auf Telegram.
 
 ## Voraussetzungen

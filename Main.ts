@@ -5,14 +5,18 @@ import {AZ_Online} from "./Services/AZ-Online/AZ-Online";
 import {Einsatzberichte} from "./Services/Feuerwehr-Uelzen/Einsatzberichte";
 import {UelzenTV} from "./Services/Uelzen-TV/UelzenTV";
 import {Verkehrsmeldungen} from "./Services/Verkehrsmeldungen/Verkehrsmeldungen";
+import {HansestadtUelzen} from "./Services/Hansestadt-Uelzen/Hansestadt-Uelzen";
 
 // Require constants
 const Configuration = require("./Configuration");
 const Moment = require("moment");
 
 export class Main {
-    Services: IService[] = [];
+    Services: IService[] = []; // Beinhaltet alle Services die registriert wurden
 
+    /**
+     * Initialisiert den Bootstrapper des Clients
+     */
     constructor() {
         console.log("Telegram Service Subscriber - Uelzen Bot");
 
@@ -26,26 +30,41 @@ export class Main {
             this.RegisterService(new Einsatzberichte());
         }
 
+        // Uelzen-TV
         if(Configuration.Services.UelzenTV.Enabled) {
             this.RegisterService(new UelzenTV());
         }
 
-        if(Configuration.Services.Verkehrsmeldungen.Enabled) {
-            this.RegisterService(new Verkehrsmeldungen());
+        // Hansestadt Uelzen
+        if(Configuration.Services.Hansestadt_Uelzen.Enabled) {
+            this.RegisterService(new HansestadtUelzen());
         }
 
         this.Initial_Load();
     }
 
+    /**
+     * Lädt den Bootstrapper initial nach der Service-Registrierung
+     * @constructor
+     */
     private Initial_Load() {
         this.LoadServiceDataStorage();
     }
 
+    /**
+     * Registriert einen neuen Service des Typen "IService"
+     * @param Service IService
+     * @constructor
+     */
     private RegisterService(Service: IService) {
         this.Services.push(Service);
     }
 
-    public async UpdateServices() {
+    /**
+     * Fragt alle Services nach Aktualisierungen ab
+     * @constructor
+     */
+    public UpdateServices() {
         console.info("Neuer Abfragezyklus: " + Moment().toLocaleString());
         for (let i = 0; i < this.Services.length; i++) {
             this.Services[i].UpdateServiceTick();
@@ -55,6 +74,10 @@ export class Main {
         console.info(" | Abfragezyklus beendet")
     }
 
+    /**
+     * Lädt den ServiceData-Cache aller Services zur Duplettenvermeidung
+     * @constructor
+     */
     public LoadServiceDataStorage() {
         console.info("Lade DataStorage: " + Moment().toLocaleString());
         for (let i = 0; i < this.Services.length; i++) {
@@ -63,6 +86,10 @@ export class Main {
         }
     }
 
+    /**
+     * Speichert den ServiceData-Cache aller Services zur Duplettenvermeidung
+     * @constructor
+     */
     public SaveServiceDataStorage() {
         console.info("Speichere DataStorage: " + Moment().toLocaleString());
         for (let i = 0; i < this.Services.length; i++) {

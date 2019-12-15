@@ -14,8 +14,8 @@ export interface IServiceDataStore {
     Store(Message: IMessage): void;
     IsStored(Message: IMessage): boolean;
 
-    LoadPersist(Message: IMessage): Promise<void>;
-    SavePersist(): Promise<void>;
+    LoadPersist(Message: IMessage);
+    SavePersist();
 }
 
 export class ServiceDataStore implements IServiceDataStore{
