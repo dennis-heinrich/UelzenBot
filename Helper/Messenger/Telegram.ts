@@ -7,24 +7,22 @@ const Configuration = require('../../Configuration');
 export class TelegramHelper {
     public static async CreateTelegramMessage(NMessage: IMessage) : Promise<void> {
         return new Promise<void>(resolve => {
-            if(Configuration.Telegram.Enabled) {
-                let TelegramC = new Telegram(Configuration.Telegram.BotToken);
+            let TelegramC = new Telegram(Configuration.Telegram.BotToken);
 
-                // Has a thumbnail or not?
-                if(NMessage.getImageUrl() != null) {
-                    TelegramC.sendPhoto(Configuration.Telegram.ChatId, NMessage.getImageUrl(), {
-                        caption: Message.BuildMessageMarkdown(NMessage),
-                        parse_mode: "Markdown"
-                    }).catch(function (e) {
-                        console.log(e);
-                    });
-                } else {
-                    TelegramC.sendMessage(Configuration.Telegram.ChatId, Message.BuildMessageMarkdown(NMessage), {
-                        parse_mode: "Markdown"
-                    }).catch(function (e) {
-                        console.log(e);
-                    });
-                }
+            // Has a thumbnail or not?
+            if(NMessage.getImageUrl() != null) {
+                TelegramC.sendPhoto(Configuration.Telegram.ChatId, NMessage.getImageUrl(), {
+                    caption: Message.BuildMessageMarkdown(NMessage),
+                    parse_mode: "Markdown"
+                }).catch(function (e) {
+                    console.log(e);
+                });
+            } else {
+                TelegramC.sendMessage(Configuration.Telegram.ChatId, Message.BuildMessageMarkdown(NMessage), {
+                    parse_mode: "Markdown"
+                }).catch(function (e) {
+                    console.log(e);
+                });
             }
         })
     }
