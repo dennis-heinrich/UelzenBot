@@ -1,7 +1,10 @@
-import {AZ_Online} from "./Services/AZ-Online/AZ-Online";
 import {IService} from "./Interfaces/IService";
+
+// Eingebundene Dienste
+import {AZ_Online} from "./Services/AZ-Online/AZ-Online";
 import {Einsatzberichte} from "./Services/Feuerwehr-Uelzen/Einsatzberichte";
 import {UelzenTV} from "./Services/Uelzen-TV/UelzenTV";
+import {Verkehrsmeldungen} from "./Services/Verkehrsmeldungen/Verkehrsmeldungen";
 import {HansestadtUelzen} from "./Services/Hansestadt-Uelzen/Hansestadt-Uelzen";
 
 // Require constants
@@ -17,53 +20,27 @@ export class Main {
     constructor() {
         console.log("Telegram Service Subscriber - Uelzen Bot");
 
-        if(Main.CheckConfiguration()) {
-            // Allgemeine Zeitung - Uelzen
-            if(Configuration.Services.AZ_Online.Enabled) {
-                this.RegisterService(new AZ_Online());
-            }
-
-            // Feuerwehr Uelzen - Einsätze
-            if(Configuration.Services.FF_UE_Einsatzberichte.Enabled) {
-                this.RegisterService(new Einsatzberichte());
-            }
-
-            // Uelzen-TV
-            if(Configuration.Services.UelzenTV.Enabled) {
-                this.RegisterService(new UelzenTV());
-            }
-
-            // Hansestadt Uelzen
-            if(Configuration.Services.Hansestadt_Uelzen.Enabled) {
-                this.RegisterService(new HansestadtUelzen());
-            }
-
-            this.Initial_Load();
-        } else {
-            console.error(" ! ! ! Die Konfigurationsdatei der Services ist nicht korrekt! (Evtl. Konfigurationsfehler?)");
-        }
-    }
-
-    /**
-     * Überprüft die Konfiguration auf bestehende Fehler
-     * @constructor
-     */
-    private static CheckConfiguration() {
-        let CheckPassed: boolean = true;
-
-        if(Configuration.Telegram.Enabled) {
-            if(Configuration.Telegram.BotToken.length == 0) {
-                CheckPassed = false;
-            }
+        // Allgemeine Zeitung - Uelzen
+        if(Configuration.Services.AZ_Online.Enabled) {
+            this.RegisterService(new AZ_Online());
         }
 
-        if(Configuration.Discord.Enabled) {
-            if(Configuration.Discord.WebHook.length == 0) {
-                CheckPassed = false;
-            }
+        // Feuerwehr Uelzen - Einsätze
+        if(Configuration.Services.FF_UE_Einsatzberichte.Enabled) {
+            this.RegisterService(new Einsatzberichte());
         }
 
-        return CheckPassed;
+        // Uelzen-TV
+        if(Configuration.Services.UelzenTV.Enabled) {
+            this.RegisterService(new UelzenTV());
+        }
+
+        // Hansestadt Uelzen
+        if(Configuration.Services.Hansestadt_Uelzen.Enabled) {
+            this.RegisterService(new HansestadtUelzen());
+        }
+
+        this.Initial_Load();
     }
 
     /**
