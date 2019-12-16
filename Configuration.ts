@@ -4,8 +4,8 @@ module.exports = {
     },
     Telegram: {
         Enabled: true,
-        ChatId: -100000000,
-        BotToken: "XXXXXXXXXX",
+        ChatId: -0,
+        BotToken: "",
     },
     Discord: {
         Enabled: false,
@@ -27,6 +27,10 @@ module.exports = {
         FF_UE_Einsatzberichte: {
             Enabled: true,
             ServiceFeedUrl: "https://feuerwehr-uelzen.de/einsaetze/feed/",
+        },
+        Verkehrsmeldungen: {
+            Enabled: true,
+            ServiceFeedUrl: "https://www.verkehrsinfo.de/httpsmobil/index.php?c=staulist&lat=53&lon=10"
         }
     }
 };
