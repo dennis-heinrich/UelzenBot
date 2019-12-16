@@ -19,6 +19,7 @@ jobs:
     - name: Startet den Bot (Konfiguration erforderlich)
       run: |
         npm install
+        tsc
         npm start
       env:
         CI: false
