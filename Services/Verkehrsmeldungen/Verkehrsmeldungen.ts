@@ -6,7 +6,7 @@ const Configuration = require("../../Configuration");
 const {JSDOM} = require("jsdom");
 const utf8 = require('utf8');
 
-export class Verkehrsmeldungen implements IService{
+export class Verkehrsmeldungen implements IService {
     current_count: number = 0;
     id: string = "verkehrsmeldungen";
     name: string = "Verkehrsmeldungen";
@@ -44,7 +44,6 @@ export class Verkehrsmeldungen implements IService{
                     console.info(" * "+ that.name + ": " + NMessage.getTitle());
                     that.store.Store(NMessage);
                     AllMessageSplitter.SplitMessage(NMessage).catch(reason => {
-                        that.
                         console.log(reason);
                     })
                 }

@@ -44,7 +44,10 @@ export class HansestadtUelzen implements IService {
                 if(!that.store.IsStored(NewMessage)) {
                     console.info(" * "+ that.name + ": " + NewMessage.getTitle());
                     that.store.Store(NewMessage);
-                    AllMessageSplitter.SplitMessage(NewMessage);
+                    AllMessageSplitter.SplitMessage(NewMessage).catch(function (reason) {
+                        console.error("Fehlermeldung: " + reason);
+                        that.store.StoreRollback(NewMessage);
+                    });
                     that.AddUpdatedMessage();
                 }
             }
