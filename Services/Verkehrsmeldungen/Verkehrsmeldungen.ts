@@ -4,7 +4,6 @@ import {AllMessageSplitter} from "../../Helper/Messenger/All";
 import {Message} from "../../Interfaces/Messages/Message";
 const Configuration = require("../../Configuration");
 const {JSDOM} = require("jsdom");
-const utf8 = require('utf8');
 
 export class Verkehrsmeldungen implements IService {
     current_count: number = 0;
@@ -43,6 +42,7 @@ export class Verkehrsmeldungen implements IService {
                 if(!that.store.IsStored(NMessage) && NMessage.getTitle().includes("Uelzen")) {
                     console.info(" * "+ that.name + ": " + NMessage.getTitle());
                     that.store.Store(NMessage);
+                    that.AddUpdatedMessage();
                     try {
                         AllMessageSplitter.SplitMessage(NMessage).catch(function(reason) {
                             console.error("Fehlermeldung: " + reason);
