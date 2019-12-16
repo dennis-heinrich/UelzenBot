@@ -1,4 +1,4 @@
-name: Startet den Bot (Konfiguration erforderlich)
+name: Prüft den Typescript-Build
 
 on: [push]
 
@@ -16,7 +16,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Startet den Bot (Konfiguration erforderlich)
+    - name: Prüft den Typescript-Build
       run: |
         npm install
         tsc
