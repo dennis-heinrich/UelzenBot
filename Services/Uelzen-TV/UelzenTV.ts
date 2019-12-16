@@ -57,9 +57,6 @@ export class UelzenTV implements IService {
                                         that.store.StoreRollback(NewMessage);
                                     });
                               }
-                            } catch (e) {
-                                console.error(e);
-                            }
                         } catch (e) {
                             console.error(e);
                         }
