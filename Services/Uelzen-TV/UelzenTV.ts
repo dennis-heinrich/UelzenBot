@@ -49,16 +49,12 @@ export class UelzenTV implements IService {
                     JSDOM.fromURL(NewMessage.getWebLinkUrl()).then(dom => {
                         try {
                             let image = dom.window.document.querySelector("article p img");
-
-                              if(image) {
-                                    NewMessage.setImageUrl(image.src);
-                                    AllMessageSplitter.SplitMessage(NewMessage).catch(function (reason) {
-                                        console.error("Fehlermeldung: " + reason);
-                                        that.store.StoreRollback(NewMessage);
-                                    });
-                              }
-                            } catch (e) {
-                                console.error(e);
+                            if(image) {
+                                NewMessage.setImageUrl(image.src);
+                                AllMessageSplitter.SplitMessage(NewMessage).catch(function (reason) {
+                                    console.error("Fehlermeldung: " + reason);
+                                    that.store.StoreRollback(NewMessage);
+                                });
                             }
                         } catch (e) {
                             console.error(e);

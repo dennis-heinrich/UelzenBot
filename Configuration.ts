@@ -5,7 +5,7 @@ module.exports = {
     Telegram: {
         Enabled: true,
         ChatId: -100000000,
-        BotToken: "XXXXXXXXXX",
+        BotToken: "",
     },
     Discord: {
         Enabled: false,
