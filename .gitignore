@@ -7,9 +7,3 @@ package-lock.json
 # Projektbezogene Ignores
 /Build/
 Configuration.ts
-
-# Bereits angelegte ServiceStore-Cache Dateien
-/Data/az_online.json
-/Data/feuerwehr_uelzen.json
-/Data/uelzen_tv.json
-/Data/hansestadt_uelzen.json

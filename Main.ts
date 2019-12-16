@@ -6,6 +6,7 @@ import {Einsatzberichte} from "./Services/Feuerwehr-Uelzen/Einsatzberichte";
 import {UelzenTV} from "./Services/Uelzen-TV/UelzenTV";
 import {Verkehrsmeldungen} from "./Services/Verkehrsmeldungen/Verkehrsmeldungen";
 import {HansestadtUelzen} from "./Services/Hansestadt-Uelzen/Hansestadt-Uelzen";
+import {Warnwetter} from "./Services/Wetterwarnungen/Warnwetter";
 
 // Require constants
 const Configuration = require("./Configuration");
@@ -43,6 +44,11 @@ export class Main {
         // Verkehrsmeldungen
         if(Configuration.Services.Verkehrsmeldungen.Enabled) {
             this.RegisterService(new Verkehrsmeldungen());
+        }
+
+        // Wettermeldungen (DWD) - In Programmierung (Beta)
+        if(Configuration.Services.DWD_Warnwetter.Enabled) {
+            this.RegisterService(new Warnwetter());
         }
 
         this.Initial_Load();

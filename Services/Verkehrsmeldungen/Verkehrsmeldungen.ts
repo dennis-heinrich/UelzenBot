@@ -4,7 +4,6 @@ import {AllMessageSplitter} from "../../Helper/Messenger/All";
 import {Message} from "../../Interfaces/Messages/Message";
 const Configuration = require("../../Configuration");
 const {JSDOM} = require("jsdom");
-const utf8 = require('utf8');
 
 export class Verkehrsmeldungen implements IService {
     current_count: number = 0;
@@ -25,7 +24,7 @@ export class Verkehrsmeldungen implements IService {
         return this.current_count;
     }
 
-    async UpdateServiceTick() {
+    UpdateServiceTick() {
         let that = this;
         this._request(Configuration.Services.Verkehrsmeldungen.ServiceFeedUrl, function (err, res, body) {
             let dom = JSDOM.fragment(body);
@@ -43,9 +42,15 @@ export class Verkehrsmeldungen implements IService {
                 if(!that.store.IsStored(NMessage) && NMessage.getTitle().includes("Uelzen")) {
                     console.info(" * "+ that.name + ": " + NMessage.getTitle());
                     that.store.Store(NMessage);
-                    AllMessageSplitter.SplitMessage(NMessage).catch(reason => {
-                        console.log(reason);
-                    })
+                    that.AddUpdatedMessage();
+                    try {
+                        AllMessageSplitter.SplitMessage(NMessage).catch(function(reason) {
+                            console.error("Fehlermeldung: " + reason);
+                            that.store.StoreRollback(NMessage);
+                        });
+                    } catch (e) {
+                        console.error(e);
+                    }
                 }
             }
         });
