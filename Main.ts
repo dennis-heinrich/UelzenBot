@@ -40,6 +40,11 @@ export class Main {
             this.RegisterService(new HansestadtUelzen());
         }
 
+        // Verkehrsmeldungen
+        if(Configuration.Services.Verkehrsmeldungen.Enabled) {
+            this.RegisterService(new Verkehrsmeldungen());
+        }
+
         this.Initial_Load();
     }
 

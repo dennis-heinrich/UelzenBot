@@ -28,7 +28,7 @@ export class Message implements IMessage {
                         return "*" + NMessage.getContentOwner() + "*\n[" + NMessage.getTitle() + "]("+NMessage.getWebLinkUrl()+")\n" + Message.EscapeText(NMessage.getMessage()) + "\nVom: _"+Moment(NMessage.getCreationTime()).format('lll')+"_";
                     }
                 } else {
-                    return "*" + NMessage.getContentOwner() + "*\n*" + NMessage.getTitle() + "*\n" + Message.EscapeText(NMessage.getMessage());
+                    return "*" + NMessage.getContentOwner() + "*\n\n*" + NMessage.getTitle() + "*\n" + Message.EscapeText(NMessage.getMessage());
                 }
             } else {
                 return "*" + NMessage.getTitle() + "*\n" + Message.EscapeText(NMessage.getMessage());
