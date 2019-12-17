@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-Beschreibung:
+**Beschreibung:**
 
 
-Sonstige Anmerkungen:
+**Sonstige Anmerkungen:**
