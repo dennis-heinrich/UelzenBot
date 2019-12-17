@@ -2,6 +2,7 @@ import {IService} from "../../Interfaces/IService";
 import {ServiceDataStore} from "../../Helper/ServiceDataStore";
 import {AllMessageSplitter} from "../../Helper/Messenger/All";
 import {Message} from "../../Interfaces/Messages/Message";
+import {ApplicationLogger} from "../../Helper/ApplicationLogger";
 const Configuration = require("../../Configuration");
 const {JSDOM} = require("jsdom");
 
@@ -24,9 +25,9 @@ export class Verkehrsmeldungen implements IService {
         return this.current_count;
     }
 
-    UpdateServiceTick() {
+    async UpdateServiceTick() {
         let that = this;
-        this._request(Configuration.Services.Verkehrsmeldungen.ServiceFeedUrl, function (err, res, body) {
+        await this._request(Configuration.Services.Verkehrsmeldungen.ServiceFeedUrl, async function (err, res, body) {
             let dom = JSDOM.fragment(body);
             let Query = dom.querySelectorAll("div.panel-body ul li .message");
             for (let i = 0; i < Query.length; i++) {
@@ -40,11 +41,11 @@ export class Verkehrsmeldungen implements IService {
                 NMessage.setCreationTime(new Date());
 
                 if(!that.store.IsStored(NMessage) && NMessage.getTitle().includes("Uelzen")) {
-                    console.info(" * "+ that.name + ": " + NMessage.getTitle());
+                    ApplicationLogger.ServiceEntry(that.name, NMessage.getTitle());
                     that.store.Store(NMessage);
                     that.AddUpdatedMessage();
                     try {
-                        AllMessageSplitter.SplitMessage(NMessage).catch(function(reason) {
+                        await AllMessageSplitter.SplitMessage(NMessage).catch(function(reason) {
                             console.error("Fehlermeldung: " + reason);
                             that.store.StoreRollback(NMessage);
                         });

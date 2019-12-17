@@ -2,6 +2,7 @@ import {IService} from "../../Interfaces/IService";
 import {Message} from "../../Interfaces/Messages/Message";
 import {AllMessageSplitter} from "../../Helper/Messenger/All";
 import {ServiceDataStore} from "../../Helper/ServiceDataStore";
+import {ApplicationLogger} from "../../Helper/ApplicationLogger";
 
 const Configuration = require("../../Configuration");
 const FeedParser = require("feedparser");
@@ -28,9 +29,9 @@ export class UelzenTV implements IService {
         return this.current_count;
     }
 
-    public UpdateServiceTick() {
+    async UpdateServiceTick() {
         let that = this;
-        this._request(Configuration.Services.UelzenTV.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
+        await this._request(Configuration.Services.UelzenTV.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
             let stream = this, Post;
             while(Post = stream.read()) {
                 let NewMessage = new Message();
@@ -42,20 +43,20 @@ export class UelzenTV implements IService {
 
                 //console.log(that.store.IsStored(NewMessage));
                 if(!that.store.IsStored(NewMessage)) {
-                    console.info(" * "+ that.name + ": " + NewMessage.getTitle());
+                    ApplicationLogger.ServiceEntry(that.name, NewMessage.getTitle());
                     that.store.Store(NewMessage);
                     that.AddUpdatedMessage();
 
-                    JSDOM.fromURL(NewMessage.getWebLinkUrl()).then(dom => {
+                    JSDOM.fromURL(NewMessage.getWebLinkUrl()).then(async dom => {
                         try {
-                              let image = dom.window.document.querySelector("article p img");
-                              if(image) {
-                                    NewMessage.setImageUrl(image.src);
-                                    AllMessageSplitter.SplitMessage(NewMessage).catch(function (reason) {
-                                        console.error("Fehlermeldung: " + reason);
-                                        that.store.StoreRollback(NewMessage);
-                                    });
-                              }
+                            let image = dom.window.document.querySelector("article p img");
+                            if(image) {
+                                NewMessage.setImageUrl(image.src);
+                                await AllMessageSplitter.SplitMessage(NewMessage).catch(function (reason) {
+                                    console.error("Fehlermeldung: " + reason);
+                                    that.store.StoreRollback(NewMessage);
+                                });
+                            }
                         } catch (e) {
                             console.error(e);
                         }

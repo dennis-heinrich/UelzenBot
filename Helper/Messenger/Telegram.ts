@@ -15,13 +15,13 @@ export class TelegramHelper {
                     caption: Message.BuildMessageMarkdown(NMessage),
                     parse_mode: "Markdown"
                 }).catch(function (e) {
-                    console.log(e);
+                    console.log("Fehler bei der Übertragung an Telegram");
                 });
             } else {
                 TelegramC.sendMessage(Configuration.Telegram.ChatId, Message.BuildMessageMarkdown(NMessage), {
                     parse_mode: "Markdown"
                 }).catch(function (e) {
-                    console.log(e);
+                    console.log("Fehler bei der Übertragung an Telegram");
                 });
             }
         })
