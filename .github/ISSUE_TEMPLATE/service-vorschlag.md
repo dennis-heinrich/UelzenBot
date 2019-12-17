@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-Wo finde ich die Informationen der Webseite, z.B. Internetadresse:
+**Wo finde ich die Informationen der Webseite, z.B. Internetadresse:**
 
 
-Eventuelle Zusatzinformationen zu diesem Dienst:
+**Eventuelle Zusatzinformationen zu diesem Dienst:**
