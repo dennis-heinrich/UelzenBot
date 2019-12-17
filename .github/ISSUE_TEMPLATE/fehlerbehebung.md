@@ -7,10 +7,10 @@ assignees: ''
 
 ---
 
-Was genau passiert?
+**Was genau passiert?**
 
 
-Wie lässt sich der Fehler reproduzieren?
+**Wie lässt sich der Fehler reproduzieren?**
 
 
-Kann der Fehler auf anderen Konfigurationen reproduziert werden?
+**Kann der Fehler auf anderen Konfigurationen reproduziert werden?**
