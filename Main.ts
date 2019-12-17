@@ -7,6 +7,7 @@ import {UelzenTV} from "./Services/Uelzen-TV/UelzenTV";
 import {Verkehrsmeldungen} from "./Services/Verkehrsmeldungen/Verkehrsmeldungen";
 import {HansestadtUelzen} from "./Services/Hansestadt-Uelzen/Hansestadt-Uelzen";
 import {Warnwetter} from "./Services/Wetterwarnungen/Warnwetter";
+import {ApplicationLogger} from "./Helper/ApplicationLogger";
 
 // Require constants
 const Configuration = require("./Configuration");
@@ -69,20 +70,25 @@ export class Main {
      */
     private RegisterService(Service: IService) {
         this.Services.push(Service);
+        ApplicationLogger.Info("Service angemeldet: " + Service.name);
     }
 
     /**
      * Fragt alle Services nach Aktualisierungen ab
      * @constructor
      */
-    public UpdateServices() {
-        console.info("Neuer Abfragezyklus: " + Moment().toLocaleString());
-        for (let i = 0; i < this.Services.length; i++) {
-            this.Services[i].UpdateServiceTick();
-            console.info(" - Service: " + this.Services[i].name + " wird aktualisiert ("+this.Services[i].GetUpdatedMessages()+")");
-            this.Services[i].ClearUpdatedMessages();
+    async UpdateServices() {
+        try {
+            console.info("Neuer Abfragezyklus: " + Moment().toLocaleString());
+            for (let i = 0; i < this.Services.length; i++) {
+                await this.Services[i].UpdateServiceTick().catch(function (err) {
+                    console.log(err);
+                });
+                ApplicationLogger.Info("- Service: " + this.Services[i].name + " wird aktualisiert");
+            }
+        } catch (e) {
+            ApplicationLogger.Error(e);
         }
-        console.info(" | Abfragezyklus beendet")
     }
 
     /**
@@ -93,7 +99,7 @@ export class Main {
         console.info("Lade DataStorage: " + Moment().toLocaleString());
         for (let i = 0; i < this.Services.length; i++) {
             this.Services[i].store.LoadPersist();
-            console.info(" ! Service: " + this.Services[i].name + " wird geladen");
+            ApplicationLogger.Log("Service: " + this.Services[i].name + " wird geladen");
         }
     }
 
@@ -105,7 +111,7 @@ export class Main {
         console.info("Speichere DataStorage: " + Moment().toLocaleString());
         for (let i = 0; i < this.Services.length; i++) {
             this.Services[i].store.SavePersist();
-            console.info(" ! Service: " + this.Services[i].name + " wird gespeichert");
+            ApplicationLogger.Log("Service: " + this.Services[i].name + " wird gespeichert");
         }
     }
 }
@@ -116,7 +122,12 @@ let MainService = new Main();
 setTimeout(function () {
     MainService.UpdateServices();
     setInterval(function () {
-        MainService.UpdateServices();
+        try {
+            MainService.UpdateServices().then(r => ApplicationLogger.Log("Dienste wurden aktualisiert"));
+        } catch (e) {
+            ApplicationLogger.Error(e);
+        }
+
         MainService.SaveServiceDataStorage();
     }, Configuration.General.UpdateInterval);
 }, 2000);

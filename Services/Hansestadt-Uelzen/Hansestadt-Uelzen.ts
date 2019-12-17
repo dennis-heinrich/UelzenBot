@@ -2,6 +2,7 @@ import {IService} from "../../Interfaces/IService";
 import {Message} from "../../Interfaces/Messages/Message";
 import {AllMessageSplitter} from "../../Helper/Messenger/All";
 import {ServiceDataStore} from "../../Helper/ServiceDataStore";
+import {ApplicationLogger} from "../../Helper/ApplicationLogger";
 
 // Require statements
 const Configuration = require("../../Configuration");
@@ -29,9 +30,9 @@ export class HansestadtUelzen implements IService {
         this.current_count = 0;
     }
 
-    public UpdateServiceTick() {
+    async UpdateServiceTick() {
         let that = this;
-        this._request(Configuration.Services.Hansestadt_Uelzen.ServiceFeedUrl).pipe(new FeedParser()).on('readable', function () {
+        await this._request(Configuration.Services.Hansestadt_Uelzen.ServiceFeedUrl).pipe(new FeedParser()).on('readable', async function () {
             let stream = this, Post;
             while(Post = stream.read()) {
                 let NewMessage = new Message();
@@ -42,9 +43,9 @@ export class HansestadtUelzen implements IService {
                 NewMessage.setContentOwner(that.name);
 
                 if(!that.store.IsStored(NewMessage)) {
-                    console.info(" * "+ that.name + ": " + NewMessage.getTitle());
+                    ApplicationLogger.ServiceEntry(that.name, NewMessage.getTitle());
                     that.store.Store(NewMessage);
-                    AllMessageSplitter.SplitMessage(NewMessage).catch(function (reason) {
+                    await AllMessageSplitter.SplitMessage(NewMessage).catch(function (reason) {
                         console.error("Fehlermeldung: " + reason);
                         that.store.StoreRollback(NewMessage);
                     });
